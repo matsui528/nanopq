@@ -23,10 +23,9 @@ pip install nanopq
 import nanopq
 import numpy as np
 
-N, D = 10000, 128  # 10,000 128-dim vectors
-
-X = np.random.random((N, D)).astype(np.float32)
-query = np.random.random((D,)).astype(np.float32)
+N, D = 10000, 128
+X = np.random.random((N, D)).astype(np.float32)  # 10,000 128-dim vectors
+query = np.random.random((D,)).astype(np.float32)  # a 128-dim vector
 
 # Instantiate with M=8 sub-spaces
 pq = nanopq.PQ(M=8)
