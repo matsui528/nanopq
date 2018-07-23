@@ -1,0 +1,33 @@
+`nanopq <https://github.com/matsui528/nanopq>`_ documentation
+===================================================================
+
+
+
+Instalation
+-------------
+You can install the package via pip. This library works with Python 3.6+ on linux.
+
+::
+
+    $ pip install nanopq
+
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   
+   tutorial
+   nanopq
+
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
