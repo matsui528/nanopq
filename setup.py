@@ -11,6 +11,7 @@ setup(
     version='0.1.0',
     description='Product quantization for nearest neighbor search in a single python file',
     long_description=readme,
+    long_description_content_type='text/markdown',
     author='Yusuke Matsui',
     author_email='matsui528@gmail.com',
     url='https://github.com/matsui528/nanopq',
