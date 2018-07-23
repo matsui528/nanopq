@@ -23,8 +23,8 @@ pip install nanopq
 import nanopq
 import numpy as np
 
-X = np.random.random((10000, 128))
-query = np.random.random((128,))
+X = np.random.random((10000, 128)).astype(np.float32)
+query = np.random.random((128,)).astype(np.float32)
 
 # Instantiate with M=8 sub-spaces
 pq = nanopq.PQ(M=8)
