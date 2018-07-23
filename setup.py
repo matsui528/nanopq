@@ -8,7 +8,7 @@ with open('LICENSE') as f:
 
 setup(
     name='nanopq',
-    version='0.1.1',
+    version='0.1.2',
     description='Product quantization for nearest neighbor search in a single python file',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -16,6 +16,7 @@ setup(
     author_email='matsui528@gmail.com',
     url='https://github.com/matsui528/nanopq',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    install_requires=['numpy', 'scipy'],
 )
 
