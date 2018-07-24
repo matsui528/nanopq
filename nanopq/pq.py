@@ -2,7 +2,7 @@ import numpy as np
 from scipy.cluster.vq import vq, kmeans2
 
 
-class PQ:
+class PQ(object):
     """Pure python implementation of Product Quantization (PQ) [Jegou11]_.
 
     For the indexing phase of database vectors,
@@ -133,7 +133,9 @@ class PQ:
             query (np.ndarray): Input vector with shape=(D, ) and dtype=np.float32
 
         Returns:
-            np.ndarray: Distance table with shape=(M, Ks) and dtype=np.float32
+            nanopq.DistanceTable:
+                Distance table. which contains
+                dtable with shape=(M, Ks) and dtype=np.float32
 
         """
         assert query.dtype == np.float32
@@ -148,28 +150,56 @@ class PQ:
             query_sub = query[m * self.Ds : (m+1) * self.Ds]
             dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
-        return dtable
+        return DistanceTable(dtable)
 
-    def adist(self, dtable, codes):
-        """Given a distance table (from a query) and database PQ-codes,
-        compute asymmetric distances between the query and the PQ-codes.
+
+class DistanceTable(object):
+    """Distance table from query to codeworkds.
+    Given a query vector, a PQ/OPQ instance compute this DistanceTable class
+    using :func:`PQ.dtable` or :func:`OPQ.dtable`.
+    The Asymmetric Distance from query to each database codes can be computed
+    by :func:`DistanceTable.adist`.
+
+    Args:
+        dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32
+            computed by :func:`PQ.dtable` or :func:`OPQ.dtable`
+
+    Attributes:
+        dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32.
+            Note that dtable[m][ks] contains the squared Euclidean distance between
+            (1) m-th sub-vector of query and (2) ks-th codeword for m-th subspace.
+
+    """
+    def __init__(self, dtable):
+        assert dtable.ndim == 2
+        assert dtable.dtype == np.float32
+        self.dtable = dtable
+
+    def adist(self, codes):
+        """Given PQ-codes, compute Asymmetric Distances between the query (self.dtable)
+        and the PQ-codes.
 
         Args:
-            dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32
-                computed by :func:`PQ.dtable`
             codes (np.ndarray): PQ codes with shape=(N, M) and dtype=self.code_dtype
 
         Returns:
             np.ndarray: Distances with shape=(N, ) and dtype=np.float32
 
         """
-        assert dtable.ndim == 2
-        M1, Ks = dtable.shape
-        assert M1 == self.M and Ks == self.Ks
-        assert codes.ndim == 2
-        N, M2 = codes.shape
-        assert M2 == self.M
 
-        dists = np.sum(dtable[range(self.M), codes], axis=1)
+        assert codes.ndim == 2
+        N, M = codes.shape
+        assert M == self.dtable.shape[0]
+
+        # Fetch distance values using codes. The following codes are
+        dists = np.sum(self.dtable[range(M), codes], axis=1)
+
+        # The above line is equivalent to the followings:
+        # dists = np.zeros((N, )).astype(np.float32)
+        # for n in range(N):
+        #     for m in range(M):
+        #         dists[n] += self.dtable[m][codes[n][m]]
+
         return dists
+
 

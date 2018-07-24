@@ -1,8 +1,8 @@
-from .pq import PQ
+from .pq import PQ, DistanceTable
 import numpy as np
 
 
-class OPQ:
+class OPQ(object):
     """Pure python implementation of Optimized Product Quantization (OPQ) [Ge14]_.
 
     OPQ is a simple extension of PQ.
@@ -157,31 +157,19 @@ class OPQ:
 
     def dtable(self, query):
         """Compute a distance table for a query vector. The query is
-        first rotated by :func:`OPQ.rotate`, then dtable is computed by :func:`PQ.dtable`.
+        first rotated by :func:`OPQ.rotate`, then DistanceTable is computed by :func:`PQ.dtable`.
 
         Args:
             query (np.ndarray): Input vector with shape=(D, ) and dtype=np.float32
 
         Returns:
-            np.ndarray: Distance table with shape=(M, Ks) and dtype=np.float32
+            nanopq.DistanceTable:
+                Distance table. which contains
+                dtable with shape=(M, Ks) and dtype=np.float32
 
         """
         return self.pq.dtable(self.rotate(query))
 
-    def adist(self, dtable, codes):
-        """Same as :func:`PQ.adist`
-
-        Args:
-            dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32
-                computed by :func:`OPQ.dtable`
-            codes (np.ndarray): PQ codes with shape=(N, M) and dtype=self.code_dtype
-
-        Returns:
-            np.ndarray: Distances with shape=(N, ) and dtype=np.float32
-
-
-        """
-        return self.pq.adist(dtable, codes)
 
 
 

@@ -54,17 +54,29 @@ and the database PQ-codes can be computed efficiently.
 
 .. code-block:: python
 
-    dtable = pq.dtable(query=query)  # (4, 256)
-    dists = pq.adist(dtable=dtable, codes=X_code)  # (10000,)
+    dt = pq.dtable(query=query)  # dt.dtable.shape = (4, 256)
+    dists = dt.adist(codes=X_code)  # (10000,)
 
-For each query, a distance table (`dtable`) is first computed online.
-The distances are computed by comparing each sub-vector of the query
+For each query, a distance table (`dt`) is first computed online.
+`dt` is an instance of `DistanceTable` class, which is a wrapper of the actual table (np.array), `dtable`.
+The elements of `dt.dtable` are computed by comparing each sub-vector of the query
 to the codewords for each sub-subspace.
-Note that `dtable[m][ks]` contains the squared Euclidean distance between
-the `m`-th sub-vector of the query and the `ks`-th codeword
+More specifically, `dt.dtable[m][ks]` contains the squared Euclidean distance between
+(1) the `m`-th sub-vector of the query and (2) the `ks`-th codeword
 for the `m`-th sub-space (`pq.codewords[m][ks]`).
 
-The nearest feature is the one with the miimum distance.
+Given `dtable`, the asymmetric distance to each PQ-code can be efficiently computed (`adist`).
+This can be achieved by simply fetching pre-computed distance value (the element of `dtable`)
+using PQ-codes.
+
+Note that the above two lines can be written in a single line
+
+.. code-block:: python
+
+    dists = pq.dtable(query=query).adist(codes=X_code)  # (10000,)
+
+
+The nearest feature is the one with the minimum distance.
 
 .. code-block:: python
 
@@ -125,11 +137,10 @@ with the same interface as follows.
 
 .. code-block:: python
 
-    opq = nanopq.OPQ(M=8)
+    opq = nanopq.OPQ(M=4)
     opq.fit(vecs=Xt, pq_iter=20, rotation_iter=10, seed=123)
     X_code = opq.encode(vecs=X)
-    dtable = opq.dtable(query=query)
-    dists = opq.adist(dtable=dtable, codes=X_code)
+    dists = opq.dtable(query=query).adist(codes=X_code)
 
 The resultant codes approximate the original vectors finer,
 that usually leads to the better search accuracy.

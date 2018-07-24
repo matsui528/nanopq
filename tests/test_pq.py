@@ -45,11 +45,13 @@ class TestSuite(unittest.TestCase):
         pq.fit(X)
         X_ = pq.encode(X)
         q = X[13]
-        dtable = pq.dtable(q)
-        self.assertEqual(dtable.shape, (M, Ks))
-        dists = pq.adist(dtable, X_)
+        dtbl = pq.dtable(q)
+        self.assertEqual(dtbl.dtable.shape, (M, Ks))
+        dists = dtbl.adist(X_)
         self.assertEqual(len(dists), N)
         self.assertEqual(np.argmin(dists), 13)
+        dists2 = pq.dtable(q).adist(X_)  # can be chained
+        self.assertAlmostEqual(dists.tolist(), dists2.tolist())
 
     def test_pickle(self):
         import pickle

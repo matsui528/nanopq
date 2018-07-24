@@ -10,6 +10,14 @@ Product Quantization (PQ)
     :undoc-members:
 
 
+Distance Table
+-------------------------
+
+.. autoclass:: nanopq.DistanceTable
+    :members:
+    :undoc-members:
+
+
 Optimized Product Quantization (OPQ)
 ------------------------------------
 

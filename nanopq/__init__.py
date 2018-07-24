@@ -1,4 +1,4 @@
-__all__ = ['PQ', 'OPQ']
+__all__ = ['PQ', 'OPQ', 'DistanceTable']
 
-from .pq import PQ
+from .pq import PQ, DistanceTable
 from .opq import OPQ

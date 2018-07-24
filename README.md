@@ -33,12 +33,11 @@ pq = nanopq.PQ(M=8)
 # Train with the top 1000 vectors
 pq.fit(X[:1000])
 
-# Encode to pq-codes
+# Encode to PQ-codes
 X_code = pq.encode(X)  # (10000, 8) with dtype=np.uint8
 
-# Results
-dtable = pq.dtable(query)  # Compute a distance table online
-dists = pq.adist(dtable, X_code)  # Asymmetric distance
+# Results: create a distance table online, and compute Asymmetric Distance to each PQ-code
+dists = pq.dtable(query).adist(X_code)
 ```
 
 ## Author
