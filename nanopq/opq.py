@@ -79,16 +79,14 @@ class OPQ(object):
             seed (int): The seed for random process
 
         """
-        from copy import deepcopy
         assert vecs.dtype == np.float32
         assert vecs.ndim == 2
         _, D = vecs.shape
         self.R = np.eye(D, dtype=np.float32)
-        X0 = deepcopy(vecs)
 
         for i in range(rotation_iter):
             print("OPQ rotation training: {} / {}".format(i, rotation_iter))
-            X = X0 @ self.R
+            X = vecs @ self.R
 
             # (a) Train codewords
             pq_tmp = PQ(M=self.M, Ks=self.Ks, verbose=self.verbose)
@@ -99,9 +97,9 @@ class OPQ(object):
                 # During the training for OPQ, just run one-pass (iter=1) PQ training
                 pq_tmp.fit(X, iter=1, seed=seed)
 
-            # (b) Update a rotatin matrix R
+            # (b) Update a rotation matrix R
             X_ = pq_tmp.decode(pq_tmp.encode(X))
-            U, s, V = np.linalg.svd(X0.T @ X_)
+            U, s, V = np.linalg.svd(vecs.T @ X_)
             print("==== Reconstruction error:", np.linalg.norm(X - X_, 'fro'), "====")
             if i == rotation_iter - 1:
                 self.pq = pq_tmp
