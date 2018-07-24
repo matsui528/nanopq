@@ -180,10 +180,11 @@ class DistanceTable(object):
         and the PQ-codes.
 
         Args:
-            codes (np.ndarray): PQ codes with shape=(N, M) and dtype=self.code_dtype
+            codes (np.ndarray): PQ codes with shape=(N, M) and
+                dtype=pq.code_dtype where pq is a pq instance that creates the codes
 
         Returns:
-            np.ndarray: Distances with shape=(N, ) and dtype=np.float32
+            np.ndarray: Asymmetric Distances with shape=(N, ) and dtype=np.float32
 
         """
 

@@ -8,7 +8,7 @@ with open('LICENSE') as f:
 
 setup(
     name='nanopq',
-    version='0.1.2',
+    version='0.1.3',
     description='Product quantization for nearest neighbor search in a single python file',
     long_description=readme,
     long_description_content_type='text/markdown',
