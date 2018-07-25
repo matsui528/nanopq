@@ -2,9 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/nanopq/badge/?version=latest)](https://nanopq.readthedocs.io/en/latest/?badge=latest)
 
-Nano Product Quantization (nanopq): product quantization for nearest neighbor search in a single python file.
-
-This package contains a vanilla implementation of Product Quantization (PQ) and Optimized Product Quantization (OPQ) written in pure python without any third party dependencies.
+Nano Product Quantization (nanopq): a vanilla implementation of Product Quantization (PQ) and Optimized Product Quantization (OPQ) written in pure python without any third party dependencies.
 
 
 ## Installing

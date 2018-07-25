@@ -6,7 +6,7 @@ with open('README.md') as f:
 setup(
     name='nanopq',
     version='0.1.4.dev1',
-    description='Product quantization for nearest neighbor search in a single python file',
+    description='Pure python implementation of product quantization for nearest neighbor search ',
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Yusuke Matsui',
