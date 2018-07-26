@@ -1,7 +1,4 @@
-.PHONY: init test clean build deploy test_deploy
-
-init:
-	pip install -r requirements.txt
+.PHONY: test clean build deploy test_deploy
 
 test:
 	python -m unittest tests/*.py
