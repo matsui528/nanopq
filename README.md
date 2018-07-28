@@ -1,12 +1,13 @@
 # nanopq
 
+[![Build Status](https://travis-ci.org/matsui528/nanopq.svg?branch=master)](https://travis-ci.org/matsui528/nanopq)
 [![Documentation Status](https://readthedocs.org/projects/nanopq/badge/?version=latest)](https://nanopq.readthedocs.io/en/latest/?badge=latest)
 
 Nano Product Quantization (nanopq): a vanilla implementation of Product Quantization (PQ) and Optimized Product Quantization (OPQ) written in pure python without any third party dependencies.
 
 
 ## Installing
-You can install the package via pip. This library works with Python 3.6+ on linux.
+You can install the package via pip. This library works with Python 3.5+ on linux.
 ```
 pip install nanopq
 ```
