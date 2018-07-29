@@ -1,6 +1,9 @@
 API Reference
 ==============
 
+.. automodule:: nanopq
+
+
 
 Product Quantization (PQ)
 -------------------------
