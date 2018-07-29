@@ -13,8 +13,8 @@ pip install nanopq
 ```
 
 ## [Documentation](https://nanopq.readthedocs.io/en/latest/index.html)
-- [Tutorial](https://nanopq.readthedocs.io/en/latest/tutorial.html)
-- [API](https://nanopq.readthedocs.io/en/latest/api.html)
+- [Tutorial](https://nanopq.readthedocs.io/en/latest/source/tutorial.html)
+- [API](https://nanopq.readthedocs.io/en/latest/source/api.html)
 
 ## Example
 
