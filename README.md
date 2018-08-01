@@ -35,7 +35,6 @@ pq.fit(X[:1000])
 # Encode to PQ-codes
 X_code = pq.encode(X)  # (10000, 8) with dtype=np.uint8
 
-# Results: create a distance table online, and compute Asymmetric Distance to each PQ-code
 dists = pq.dtable(query).adist(X_code)
 ```
 
@@ -47,6 +46,6 @@ dists = pq.dtable(query).adist(X_code)
 - [H. Jegou, M. Douze, and C. Schmid, "Product Quantization for Nearest Neighbor Search", IEEE TPAMI 2011](https://ieeexplore.ieee.org/document/5432202/) (the original paper of PQ)
 - [T. Ge, K. He, Q. Ke, and J. Sun, "Optimized Product Quantization", IEEE TPAMI 2014](https://ieeexplore.ieee.org/document/6678503/) (the original paper of OPQ)
 - [Y. Matsui, Y. Uchida, H. Jegou, and S. Satoh, "A Survey of Product Quantization", ITE MTA 2018](https://www.jstage.jst.go.jp/article/mta/6/1/6_2/_pdf/) (a survey paper of PQ) 
-- [PQ in faiss](https://github.com/facebookresearch/faiss/wiki/Faiss-building-blocks:-clustering,-PCA,-quantization#pq-encoding--decoding) (Faiss contains an optimized implementation of PQ. [See the difference to ours here](https://nanopq.readthedocs.io/en/latest/tutorial.html#difference-from-pq-in-faiss))
+- [PQ in faiss](https://github.com/facebookresearch/faiss/wiki/Faiss-building-blocks:-clustering,-PCA,-quantization#pq-encoding--decoding) (Faiss contains an optimized implementation of PQ. [See the difference to ours here](https://nanopq.readthedocs.io/en/latest/source/tutorial.html#difference-from-pq-in-faiss))
 - [Rayuela.jl](https://github.com/una-dinosauria/Rayuela.jl) (Julia implementation of several encoding algorithms including PQ and OPQ)
 - [PQk-means](https://github.com/DwangoMediaVillage/pqkmeans) (clustering on PQ-codes. The implementation of nanopq is compatible to [that of PQk-means](https://github.com/DwangoMediaVillage/pqkmeans/blob/master/tutorial/1_pqkmeans.ipynb))
