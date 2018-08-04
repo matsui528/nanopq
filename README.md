@@ -35,6 +35,7 @@ pq.fit(X[:1000])
 # Encode to PQ-codes
 X_code = pq.encode(X)  # (10000, 8) with dtype=np.uint8
 
+# Results: create a distance table online, and compute Asymmetric Distance to each PQ-code 
 dists = pq.dtable(query).adist(X_code)
 ```
 
