@@ -3,7 +3,7 @@
 
 
 
-Instalation
+Installation
 -------------
 You can install the package via pip. This library works with Python 3.5+ on linux.
 
