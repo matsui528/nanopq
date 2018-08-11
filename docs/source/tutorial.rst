@@ -48,6 +48,12 @@ of the training vectors.
 
 If you do not have training data, you can simply use the database vectors
 (or a subset of them) for training: ``pq.fit(vecs=X[:1000])``. After that, you can check codewords by `pq.codewords`.
+Note that, alternatively, you can instantiate and train an instance in one line if you want:
+
+.. code-block:: python
+
+    pq = nanopq.PQ(M=4, Ks=256).fit(vecs=Xt, iter=20, seed=123)
+
 
 Given this quantizer, database vectors can be encoded to PQ-codes.
 
@@ -146,8 +152,7 @@ with the same interface as follows.
 
 .. code-block:: python
 
-    opq = nanopq.OPQ(M=4)
-    opq.fit(vecs=Xt, pq_iter=20, rotation_iter=10, seed=123)
+    opq = nanopq.OPQ(M=4).fit(vecs=Xt, pq_iter=20, rotation_iter=10, seed=123)
     X_code = opq.encode(vecs=X)
     dists = opq.dtable(query=query).adist(codes=X_code)
 

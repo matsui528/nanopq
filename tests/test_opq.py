@@ -24,6 +24,10 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(opq.codewords.shape, (M, Ks, D / M))
         self.assertEqual(opq.R.shape, (D, D))
 
+        opq2 = nanopq.OPQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
+        self.assertTrue(np.allclose(opq.codewords, opq2.codewords))
+
+
     def test_rotate(self):
         N, D, M, Ks = 100, 12, 4, 10
         X = np.random.random((N, D)).astype(np.float32)

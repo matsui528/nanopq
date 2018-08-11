@@ -53,6 +53,9 @@ class PQ(object):
             iter (int): The number of iteration for k-means
             seed (int): The seed for random process
 
+        Returns:
+            object: self
+
         """
         assert vecs.dtype == np.float32
         assert vecs.ndim == 2
@@ -72,6 +75,8 @@ class PQ(object):
                 print("Training the subspace: {} / {}".format(m, self.M))
             vecs_sub = vecs[:, m * self.Ds : (m+1) * self.Ds]
             self.codewords[m], _ = kmeans2(vecs_sub, self.Ks, iter=iter, minit='points')
+
+        return self
 
     def encode(self, vecs):
         """Encode input vectors into PQ-codes.

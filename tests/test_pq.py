@@ -25,6 +25,9 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(pq.Ds, D / M)
         self.assertEqual(pq.codewords.shape, (M, Ks, D / M))
 
+        pq2 = nanopq.PQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
+        self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
+
     def test_encode_decode(self):
         N, D, M, Ks = 100, 12, 4, 10
         X = np.random.random((N, D)).astype(np.float32)

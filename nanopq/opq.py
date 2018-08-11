@@ -78,6 +78,9 @@ class OPQ(object):
             rotation_iter (int): The number of iteration for leraning rotation
             seed (int): The seed for random process
 
+        Returns:
+            object: self
+
         """
         assert vecs.dtype == np.float32
         assert vecs.ndim == 2
@@ -106,6 +109,8 @@ class OPQ(object):
                 break
             else:
                 self.R = U @ V
+
+        return self
 
     def rotate(self, vecs):
         """Rotate input vector(s) by the rotation matrix.`
