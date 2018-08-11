@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='nanopq',
-    version='0.1.4',
+    version='0.1.5',
     description='Pure python implementation of product quantization for nearest neighbor search ',
     long_description=readme,
     long_description_content_type='text/markdown',
