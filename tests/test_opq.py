@@ -27,6 +27,27 @@ class TestSuite(unittest.TestCase):
         opq2 = nanopq.OPQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
         self.assertTrue(np.allclose(opq.codewords, opq2.codewords))
 
+    def test_eq(self):
+        import copy
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
+        opq1 = nanopq.OPQ(M=M, Ks=Ks)
+        opq2 = nanopq.OPQ(M=M, Ks=Ks)
+        opq3 = copy.deepcopy(opq1)
+        opq4 = nanopq.OPQ(M=M, Ks=2*Ks)
+        self.assertTrue(opq1 == opq1)
+        self.assertTrue(opq1 == opq2)
+        self.assertTrue(opq1 == opq3)
+        self.assertTrue(opq1 != opq4)
+
+        opq1.fit(X)
+        opq2.fit(X)
+        opq3 = copy.deepcopy(opq1)
+        opq4.fit(X)
+        self.assertTrue(opq1 == opq1)
+        self.assertTrue(opq1 == opq2)
+        self.assertTrue(opq1 == opq3)
+        self.assertTrue(opq1 != opq4)
 
     def test_rotate(self):
         N, D, M, Ks = 100, 12, 4, 10

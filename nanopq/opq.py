@@ -27,6 +27,12 @@ class OPQ(object):
         self.pq = PQ(M, Ks, verbose)
         self.R = None
 
+    def __eq__(self, other):
+        if isinstance(other, OPQ):
+            return self.pq == other.pq and np.array_equal(self.codewords, other.codewords)
+        else:
+            return False
+
     @property
     def M(self):
         """int: The number of sub-space"""

@@ -42,6 +42,14 @@ class PQ(object):
         if verbose:
             print("M: {}, Ks: {}, code_dtype: {}".format(M, Ks, self.code_dtype))
 
+    def __eq__(self, other):
+        if isinstance(other, PQ):
+            return (self.M, self.Ks, self.verbose, self.code_dtype, self.Ds) == \
+                   (other.M, other.Ks, other.verbose, other.code_dtype, other.Ds) and \
+                   np.array_equal(self.codewords, other.codewords)
+        else:
+            return False
+
     def fit(self, vecs, iter=20, seed=123):
         """Given training vectors, run k-means for each sub-space and create
         codewords for each sub-space.

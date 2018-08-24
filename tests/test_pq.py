@@ -28,6 +28,28 @@ class TestSuite(unittest.TestCase):
         pq2 = nanopq.PQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
 
+    def test_eq(self):
+        import copy
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
+        pq1 = nanopq.PQ(M=M, Ks=Ks)
+        pq2 = nanopq.PQ(M=M, Ks=Ks)
+        pq3 = copy.deepcopy(pq1)
+        pq4 = nanopq.PQ(M=M, Ks=2*Ks)
+        self.assertTrue(pq1 == pq1)
+        self.assertTrue(pq1 == pq2)
+        self.assertTrue(pq1 == pq3)
+        self.assertTrue(pq1 != pq4)
+
+        pq1.fit(X)
+        pq2.fit(X)
+        pq3 = copy.deepcopy(pq1)
+        pq4.fit(X)
+        self.assertTrue(pq1 == pq1)
+        self.assertTrue(pq1 == pq2)
+        self.assertTrue(pq1 == pq3)
+        self.assertTrue(pq1 != pq4)
+
     def test_encode_decode(self):
         N, D, M, Ks = 100, 12, 4, 10
         X = np.random.random((N, D)).astype(np.float32)
@@ -67,6 +89,7 @@ class TestSuite(unittest.TestCase):
         self.assertEqual((pq.M, pq.Ks, pq.verbose, pq.code_dtype, pq.Ds),
                          (pq2.M, pq2.Ks, pq2.verbose, pq2.code_dtype, pq2.Ds))
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
+        self.assertTrue(pq == pq2)
 
 
 if __name__ == '__main__':
