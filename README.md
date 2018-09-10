@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/matsui528/nanopq.svg?branch=master)](https://travis-ci.org/matsui528/nanopq)
 [![Documentation Status](https://readthedocs.org/projects/nanopq/badge/?version=latest)](https://nanopq.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/nanopq.svg)](https://badge.fury.io/py/nanopq)
 
 Nano Product Quantization (nanopq): a vanilla implementation of Product Quantization (PQ) and Optimized Product Quantization (OPQ) written in pure python without any third party dependencies.
 
