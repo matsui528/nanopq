@@ -1,11 +1,15 @@
 from setuptools import setup, find_packages
+import re
 
 with open('README.md') as f:
     readme = f.read()
 
+with open('nanopq/__init__.py') as f:
+    version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
+    
 setup(
     name='nanopq',
-    version='0.1.6',
+    version=version,
     description='Pure python implementation of product quantization for nearest neighbor search ',
     long_description=readme,
     long_description_content_type='text/markdown',
