@@ -28,3 +28,9 @@ Optimized Product Quantization (OPQ)
     :members:
     :undoc-members:
 
+
+Convert Functions to/from Faiss
+-------------------------------
+
+.. autofunction:: nanopq.nanopq_to_faiss
+.. autofunction:: nanopq.faiss_to_nanopq
