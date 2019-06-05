@@ -2,7 +2,7 @@
 import importlib
 spec = importlib.util.find_spec("faiss")
 if spec is None:
-    raise ImportError("Cannot find the faiss module.")
+    pass  # If faiss hasn't been installed. Just skip
 else:
     import faiss
 
@@ -12,6 +12,7 @@ import numpy as np
 
 def nanopq_to_faiss(pq_nanopq):
     """Convert a :class:`nanopq.PQ` instance to `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_.
+    To use this function, `faiss module needs to be installed <https://github.com/facebookresearch/faiss/blob/master/INSTALL.md>`_.
 
     Args:
         pq_nanopq (nanopq.PQ): An input PQ instance.
@@ -44,6 +45,7 @@ def nanopq_to_faiss(pq_nanopq):
 
 def faiss_to_nanopq(pq_faiss):
     """Convert a `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_ instance to :class:`nanopq.PQ`.
+    To use this function, `faiss module needs to be installed <https://github.com/facebookresearch/faiss/blob/master/INSTALL.md>`_.
 
     Args:
         pq_faiss (faiss.IndexPQ): An input PQ instance.
