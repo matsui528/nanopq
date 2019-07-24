@@ -6,7 +6,7 @@ import nanopq
 import unittest
 import numpy as np
 
-import importlib
+import importlib.util
 spec = importlib.util.find_spec("faiss")
 if spec is None:
     raise unittest.SkipTest("Cannot find the faiss module. Skipt the test for convert_faiss")
