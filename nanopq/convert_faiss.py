@@ -1,5 +1,5 @@
 # Try to import faiss
-import importlib
+import importlib.util
 spec = importlib.util.find_spec("faiss")
 if spec is None:
     pass  # If faiss hasn't been installed. Just skip
