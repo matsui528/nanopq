@@ -56,7 +56,7 @@ def faiss_to_nanopq(pq_faiss):
             * np.ndarray: Stored PQ codes in the input IndexPQ, with the shape=(N, M). This will be empty if codes are not stored
 
     """
-    assert isinstance(pq_faiss, faiss.swigfaiss.IndexPQ), "Error. pq_faiss must be IndexPQ"
+    assert isinstance(pq_faiss, faiss.IndexPQ), "Error. pq_faiss must be IndexPQ"
     assert pq_faiss.is_trained, "Error. pq_faiss must have been trained"
 
     pq_nanopq = PQ(M=pq_faiss.pq.M, Ks=int(2**pq_faiss.pq.nbits))
