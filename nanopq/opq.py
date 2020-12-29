@@ -29,7 +29,7 @@ class OPQ(object):
 
     def __eq__(self, other):
         if isinstance(other, OPQ):
-            return self.pq == other.pq and np.array_equal(self.codewords, other.codewords)
+            return self.pq == other.pq and np.array_equal(self.R, other.R)
         else:
             return False
 
@@ -47,6 +47,10 @@ class OPQ(object):
     def verbose(self):
         """bool: Verbose flag"""
         return self.pq.verbose
+
+    @verbose.setter
+    def verbose(self, v):
+        self.pq.verbose = v
 
     @property
     def code_dtype(self):
@@ -94,7 +98,8 @@ class OPQ(object):
         self.R = np.eye(D, dtype=np.float32)
 
         for i in range(rotation_iter):
-            print("OPQ rotation training: {} / {}".format(i, rotation_iter))
+            if self.verbose:
+                print("OPQ rotation training: {} / {}".format(i, rotation_iter))
             X = vecs @ self.R
 
             # (a) Train codewords
@@ -109,7 +114,8 @@ class OPQ(object):
             # (b) Update a rotation matrix R
             X_ = pq_tmp.decode(pq_tmp.encode(X))
             U, s, V = np.linalg.svd(vecs.T @ X_)
-            print("==== Reconstruction error:", np.linalg.norm(X - X_, 'fro'), "====")
+            if self.verbose:
+                print("==== Reconstruction error:", np.linalg.norm(X - X_, 'fro'), "====")
             if i == rotation_iter - 1:
                 self.pq = pq_tmp
                 break
