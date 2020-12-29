@@ -1,5 +1,5 @@
 __all__ = ['PQ', 'OPQ', 'DistanceTable', 'nanopq_to_faiss', 'faiss_to_nanopq']
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 from .pq import PQ, DistanceTable
 from .opq import OPQ
