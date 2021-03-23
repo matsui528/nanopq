@@ -1,5 +1,6 @@
-from .pq import PQ, DistanceTable
 import numpy as np
+
+from .pq import PQ, DistanceTable
 
 
 class OPQ(object):
@@ -23,6 +24,7 @@ class OPQ(object):
 
 
     """
+
     def __init__(self, M, Ks=256, verbose=True):
         self.pq = PQ(M, Ks, verbose)
         self.R = None
@@ -115,7 +117,9 @@ class OPQ(object):
             X_ = pq_tmp.decode(pq_tmp.encode(X))
             U, s, V = np.linalg.svd(vecs.T @ X_)
             if self.verbose:
-                print("==== Reconstruction error:", np.linalg.norm(X - X_, 'fro'), "====")
+                print(
+                    "==== Reconstruction error:", np.linalg.norm(X - X_, "fro"), "===="
+                )
             if i == rotation_iter - 1:
                 self.pq = pq_tmp
                 break
@@ -184,13 +188,3 @@ class OPQ(object):
 
         """
         return self.pq.dtable(self.rotate(query))
-
-
-
-
-
-
-
-
-
-

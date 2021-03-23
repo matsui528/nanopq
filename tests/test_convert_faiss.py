@@ -1,17 +1,21 @@
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent))
-import nanopq
 
+sys.path.append(str(Path(__file__).resolve().parent))
+import importlib.util
 import unittest
+
+import nanopq
 import numpy as np
 
-import importlib.util
 spec = importlib.util.find_spec("faiss")
 if spec is None:
-    raise unittest.SkipTest("Cannot find the faiss module. Skipt the test for convert_faiss")
+    raise unittest.SkipTest(
+        "Cannot find the faiss module. Skipt the test for convert_faiss"
+    )
 else:
     import faiss
+
     print("faiss version:", faiss.__version__)
 
 
@@ -36,14 +40,19 @@ class TestSuite(unittest.TestCase):
 
         # Encoded results should be same
         Cb_nanopq = pq_nanopq.encode(vecs=Xb)
-        Cb_faiss = pq_faiss.pq.compute_codes(x=Xb)   # ProductQuantizer in IndexPQ
+        Cb_faiss = pq_faiss.pq.compute_codes(x=Xb)  # ProductQuantizer in IndexPQ
         self.assertTrue(np.array_equal(Cb_nanopq, Cb_faiss))
 
         # Search result should be same
         topk = 100
         pq_faiss.add(Xb)
         _, ids1 = pq_faiss.search(x=Xq, k=topk)
-        ids2 = np.array([np.argsort(pq_nanopq.dtable(query=xq).adist(codes=Cb_nanopq))[:topk] for xq in Xq])
+        ids2 = np.array(
+            [
+                np.argsort(pq_nanopq.dtable(query=xq).adist(codes=Cb_nanopq))[:topk]
+                for xq in Xq
+            ]
+        )
         self.assertTrue(np.array_equal(ids1, ids2))
 
     def test_faiss_to_nanopq(self):
@@ -69,7 +78,12 @@ class TestSuite(unittest.TestCase):
         # Search result should be same
         topk = 100
         _, ids1 = pq_faiss.search(x=Xq, k=topk)
-        ids2 = np.array([np.argsort(pq_nanopq.dtable(query=xq).adist(codes=Cb_nanopq))[:topk] for xq in Xq])
+        ids2 = np.array(
+            [
+                np.argsort(pq_nanopq.dtable(query=xq).adist(codes=Cb_nanopq))[:topk]
+                for xq in Xq
+            ]
+        )
         self.assertTrue(np.array_equal(ids1, ids2))
 
     def test_faiss_nanopq_compare_accuracy(self):
@@ -94,7 +108,9 @@ class TestSuite(unittest.TestCase):
         # Reconstruction error should be almost identical
         avg_relative_error_faiss = ((Xb - Xb_faiss_) ** 2).sum() / (Xb ** 2).sum()
         avg_relative_error_nanopq = ((Xb - Xb_nanopq_) ** 2).sum() / (Xb ** 2).sum()
-        diff_rel = (avg_relative_error_faiss - avg_relative_error_nanopq)/ avg_relative_error_faiss
+        diff_rel = (
+            avg_relative_error_faiss - avg_relative_error_nanopq
+        ) / avg_relative_error_faiss
         diff_rel = np.sqrt(diff_rel ** 2)
         print("avg_rel_error_faiss:", avg_relative_error_faiss)
         print("avg_rel_error_nanopq:", avg_relative_error_nanopq)
@@ -103,5 +119,5 @@ class TestSuite(unittest.TestCase):
         self.assertLess(diff_rel, 0.01)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

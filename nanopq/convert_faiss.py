@@ -1,13 +1,15 @@
 # Try to import faiss
 import importlib.util
+
 spec = importlib.util.find_spec("faiss")
 if spec is None:
     pass  # If faiss hasn't been installed. Just skip
 else:
     import faiss
 
-from .pq import PQ
 import numpy as np
+
+from .pq import PQ
 
 
 def nanopq_to_faiss(pq_nanopq):
@@ -22,7 +24,9 @@ def nanopq_to_faiss(pq_nanopq):
 
     """
     assert isinstance(pq_nanopq, PQ), "Error. pq_nanopq must be nanopq.pq"
-    assert pq_nanopq.codewords is not None, "Error. pq_nanopq.codewords must have been set beforehand"
+    assert (
+        pq_nanopq.codewords is not None
+    ), "Error. pq_nanopq.codewords must have been set beforehand"
     D = pq_nanopq.Ds * pq_nanopq.M
     nbits = {np.uint8: 8, np.uint16: 16, np.uint32: 32}[pq_nanopq.code_dtype]
 
@@ -59,12 +63,13 @@ def faiss_to_nanopq(pq_faiss):
     assert isinstance(pq_faiss, faiss.IndexPQ), "Error. pq_faiss must be IndexPQ"
     assert pq_faiss.is_trained, "Error. pq_faiss must have been trained"
 
-    pq_nanopq = PQ(M=pq_faiss.pq.M, Ks=int(2**pq_faiss.pq.nbits))
+    pq_nanopq = PQ(M=pq_faiss.pq.M, Ks=int(2 ** pq_faiss.pq.nbits))
     pq_nanopq.Ds = int(pq_faiss.pq.d / pq_faiss.pq.M)
 
     # Extract codewords from pq_IndexPQ.ProductQuantizer, reshape them to M*Ks*Ds
     codewords = faiss.vector_to_array(pq_faiss.pq.centroids).reshape(
-        pq_nanopq.M, pq_nanopq.Ks, pq_nanopq.Ds)
+        pq_nanopq.M, pq_nanopq.Ks, pq_nanopq.Ds
+    )
 
     pq_nanopq.codewords = codewords
 

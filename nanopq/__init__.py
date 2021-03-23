@@ -1,6 +1,6 @@
-__all__ = ['PQ', 'OPQ', 'DistanceTable', 'nanopq_to_faiss', 'faiss_to_nanopq']
-__version__ = '0.1.9'
+__all__ = ["PQ", "OPQ", "DistanceTable", "nanopq_to_faiss", "faiss_to_nanopq"]
+__version__ = "0.1.9"
 
-from .pq import PQ, DistanceTable
+from .convert_faiss import faiss_to_nanopq, nanopq_to_faiss
 from .opq import OPQ
-from .convert_faiss import nanopq_to_faiss, faiss_to_nanopq
+from .pq import PQ, DistanceTable
