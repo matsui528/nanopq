@@ -6,7 +6,7 @@ with open("README.md") as f:
     readme = f.read()
 
 with open("nanopq/__init__.py") as f:
-    version = re.search(r"__version__ = \'(.*?)\'", f.read()).group(1)
+    version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
 
 setup(
     name="nanopq",
