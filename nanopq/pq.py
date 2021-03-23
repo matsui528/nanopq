@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.cluster.vq import vq, kmeans2
+from scipy.cluster.vq import kmeans2, vq
 
 
 class PQ(object):
@@ -32,10 +32,13 @@ class PQ(object):
         Ds (int): The dim of each sub-vector, i.e., Ds=D/M
 
     """
+
     def __init__(self, M, Ks=256, verbose=True):
         assert 0 < Ks <= 2 ** 32
         self.M, self.Ks, self.verbose = M, Ks, verbose
-        self.code_dtype = np.uint8 if Ks <= 2 ** 8 else (np.uint16 if Ks <= 2 ** 16 else np.uint32)
+        self.code_dtype = (
+            np.uint8 if Ks <= 2 ** 8 else (np.uint16 if Ks <= 2 ** 16 else np.uint32)
+        )
         self.codewords = None
         self.Ds = None
 
@@ -44,9 +47,13 @@ class PQ(object):
 
     def __eq__(self, other):
         if isinstance(other, PQ):
-            return (self.M, self.Ks, self.verbose, self.code_dtype, self.Ds) == \
-                   (other.M, other.Ks, other.verbose, other.code_dtype, other.Ds) and \
-                   np.array_equal(self.codewords, other.codewords)
+            return (self.M, self.Ks, self.verbose, self.code_dtype, self.Ds) == (
+                other.M,
+                other.Ks,
+                other.verbose,
+                other.code_dtype,
+                other.Ds,
+            ) and np.array_equal(self.codewords, other.codewords)
         else:
             return False
 
@@ -81,8 +88,8 @@ class PQ(object):
         for m in range(self.M):
             if self.verbose:
                 print("Training the subspace: {} / {}".format(m, self.M))
-            vecs_sub = vecs[:, m * self.Ds : (m+1) * self.Ds]
-            self.codewords[m], _ = kmeans2(vecs_sub, self.Ks, iter=iter, minit='points')
+            vecs_sub = vecs[:, m * self.Ds : (m + 1) * self.Ds]
+            self.codewords[m], _ = kmeans2(vecs_sub, self.Ks, iter=iter, minit="points")
 
         return self
 
@@ -106,7 +113,7 @@ class PQ(object):
         for m in range(self.M):
             if self.verbose:
                 print("Encoding the subspace: {} / {}".format(m, self.M))
-            vecs_sub = vecs[:, m * self.Ds : (m+1) * self.Ds]
+            vecs_sub = vecs[:, m * self.Ds : (m + 1) * self.Ds]
             codes[:, m], _ = vq(vecs_sub, self.codewords[m])
 
         return codes
@@ -130,7 +137,7 @@ class PQ(object):
 
         vecs = np.empty((N, self.Ds * self.M), dtype=np.float32)
         for m in range(self.M):
-            vecs[:, m * self.Ds : (m+1) * self.Ds] = self.codewords[m][codes[:, m], :]
+            vecs[:, m * self.Ds : (m + 1) * self.Ds] = self.codewords[m][codes[:, m], :]
 
         return vecs
 
@@ -153,14 +160,14 @@ class PQ(object):
         """
         assert query.dtype == np.float32
         assert query.ndim == 1, "input must be a single vector"
-        D, = query.shape
+        (D,) = query.shape
         assert D == self.Ds * self.M, "input dimension must be Ds * M"
 
         # dtable[m] : distance between m-th subvec and m-th codewords (m-th subspace)
         # dtable[m][ks] : distance between m-th subvec and ks-th codeword of m-th codewords
         dtable = np.empty((self.M, self.Ks), dtype=np.float32)
         for m in range(self.M):
-            query_sub = query[m * self.Ds : (m+1) * self.Ds]
+            query_sub = query[m * self.Ds : (m + 1) * self.Ds]
             dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
         return DistanceTable(dtable)
@@ -183,6 +190,7 @@ class DistanceTable(object):
             (1) m-th sub-vector of query and (2) ks-th codeword for m-th subspace.
 
     """
+
     def __init__(self, dtable):
         assert dtable.ndim == 2
         assert dtable.dtype == np.float32
@@ -215,5 +223,3 @@ class DistanceTable(object):
         #         dists[n] += self.dtable[m][codes[n][m]]
 
         return dists
-
-

@@ -1,4 +1,4 @@
-.PHONY: test clean build deploy test_deploy
+.PHONY: test clean build format deploy test_deploy
 
 test:
 	pytest
@@ -8,6 +8,10 @@ clean:
 
 build:
 	python setup.py sdist bdist_wheel
+
+# To run format, install pysen by 'pip install "pysen[lint]"'
+format:
+	pysen run format
 
 deploy: clean build
 	twine upload dist/*
