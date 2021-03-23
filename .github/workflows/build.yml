@@ -31,6 +31,8 @@ jobs:
       run: |
         pip install pytest
         python setup.py install
+        conda install -c pytorch faiss-cpu
+        
     - name: Test with pytest
       run: |
         make test
