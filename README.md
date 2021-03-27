@@ -1,6 +1,6 @@
 # nanopq
 
-[![Build Status](https://travis-ci.org/matsui528/nanopq.svg?branch=master)](https://travis-ci.org/matsui528/nanopq)
+[![Build Status](https://github.com/matsui528/nanopq/actions/workflows/build.yml/badge.svg)](https://github.com/matsui528/nanopq/actions)
 [![Documentation Status](https://readthedocs.org/projects/nanopq/badge/?version=latest)](https://nanopq.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/nanopq.svg)](https://badge.fury.io/py/nanopq)
 [![Downloads](https://pepy.tech/badge/nanopq)](https://pepy.tech/project/nanopq)
