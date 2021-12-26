@@ -70,9 +70,8 @@ class TestSuite(unittest.TestCase):
         )
 
     def test_parametric_init(self):
-        N, D, M, Ks = 1000, 8, 2, 10
-        Xs = np.random.rand(N, 2).astype(np.float32)
-        X = np.hstack([Xs, Xs, Xs, Xs]) + 0.05 * np.random.rand(N, 8).astype(np.float32)
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
         opq = nanopq.OPQ(M=M, Ks=Ks)
         opq.fit(X, parametric_init=False, rotation_iter=1)
         err_init = np.linalg.norm(opq.rotate(X) - opq.decode(opq.encode(X)))
