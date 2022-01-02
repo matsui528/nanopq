@@ -131,9 +131,10 @@ class OPQ(object):
         you can see the reduction of error for each iteration clearly
 
         Args:
-            vecs: (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
+            vecs (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
+            parametric_init (bool): Whether to initialize rotation using parametric assumption.
             pq_iter (int): The number of iteration for k-means
-            rotation_iter (int): The number of iteration for leraning rotation
+            rotation_iter (int): The number of iteration for learning rotation
             seed (int): The seed for random process
 
         Returns:
