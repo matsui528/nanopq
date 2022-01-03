@@ -34,7 +34,7 @@ def nanopq_to_faiss(pq_nanopq):
 
     for m in range(pq_nanopq.M):
         # Prepare std::vector<float>
-        codewords_cpp_m = faiss.FloatVector()
+        codewords_cpp_m = faiss.Float32Vector()
 
         # Flatten m-th codewords from (Ks, Ds) to (Ks * Ds, ), then copy them to cpp
         faiss.copy_array_to_vector(pq_nanopq.codewords[m].reshape(-1), codewords_cpp_m)
