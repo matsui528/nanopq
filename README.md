@@ -45,6 +45,9 @@ dists = pq.dtable(query).adist(X_code)  # (10000, )
 ## Author
 - [Yusuke Matsui](http://yusukematsui.me)
 
+## Contributors
+- [@calvinmccarter](https://github.com/calvinmccarter) implemented parametric initialization for OPQ ([#14](https://github.com/matsui528/nanopq/pull/14))
+
 
 ## Reference
 - [H. Jegou, M. Douze, and C. Schmid, "Product Quantization for Nearest Neighbor Search", IEEE TPAMI 2011](https://ieeexplore.ieee.org/document/5432202/) (the original paper of PQ)
