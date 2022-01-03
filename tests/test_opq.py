@@ -69,6 +69,19 @@ class TestSuite(unittest.TestCase):
             np.linalg.norm(opq.R.T - np.linalg.inv(opq.R)), 0.0, places=3
         )
 
+    def test_parametric_init(self):
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
+        opq = nanopq.OPQ(M=M, Ks=Ks)
+        opq.fit(X, parametric_init=False, rotation_iter=1)
+        err_init = np.linalg.norm(opq.rotate(X) - opq.decode(opq.encode(X)))
+
+        opq = nanopq.OPQ(M=M, Ks=Ks)
+        opq.fit(X, parametric_init=True, rotation_iter=1)
+        err = np.linalg.norm(opq.rotate(X) - opq.decode(opq.encode(X)))
+
+        self.assertLess(err_init, err)
+
 
 if __name__ == "__main__":
     unittest.main()

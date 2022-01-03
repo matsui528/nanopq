@@ -1,5 +1,6 @@
 import numpy as np
 
+from collections import defaultdict
 from .pq import PQ, DistanceTable
 
 
@@ -71,7 +72,52 @@ class OPQ(object):
         """int: The dim of each sub-vector, i.e., Ds=D/M"""
         return self.pq.Ds
 
-    def fit(self, vecs, pq_iter=20, rotation_iter=10, seed=123):
+    def eigenvalue_allocation(self, vecs):
+        """Given training vectors, this function learns a rotation matrix.
+        The rotation matrix is computed so as to minimize the distortion bound of PQ,
+        assuming a multivariate Gaussian distribution.
+
+        This function is a translation from the original MATLAB implementation to that of python
+        http://kaiminghe.com/cvpr13/index.html
+
+        Args:
+            vecs: (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
+
+        Returns:
+            R: (np.ndarray) rotation matrix of shape=(D, D) with dtype=np.float32.
+        """
+        _, D = vecs.shape
+        cov = np.cov(vecs, rowvar=False)
+        w, v = np.linalg.eig(cov)
+        sort_ix = np.argsort(np.abs(w))[::-1]
+        eig_vals = w[sort_ix]
+        eig_vecs = v[:, sort_ix]
+
+        assert D % self.M == 0, "input dimension must be dividable by M"
+        Ds = D // self.M
+        dim_tables = defaultdict(list)
+        fvals = np.log(eig_vals + 1e-10)
+        fvals = fvals - np.min(fvals) + 1
+        sum_list = np.zeros(self.M)
+        big_number = 1e10 + np.sum(fvals)
+
+        cur_subidx = 0
+        for d in range(D):
+            dim_tables[cur_subidx].append(d)
+            sum_list[cur_subidx] += fvals[d]
+            if len(dim_tables[cur_subidx]) == Ds:
+                sum_list[cur_subidx] = big_number
+            cur_subidx = np.argmin(sum_list)
+
+        dim_ordered = []
+        for m in range(self.M):
+            dim_ordered.extend(dim_tables[m])
+
+        R = eig_vecs[:, dim_ordered]
+        R = R.astype(dtype=np.float32)
+        return R
+
+    def fit(self, vecs, parametric_init=False, pq_iter=20, rotation_iter=10, seed=123):
         """Given training vectors, this function alternatively trains
         (a) codewords and (b) a rotation matrix.
         The procedure of training codewords is same as :func:`PQ.fit`.
@@ -85,9 +131,10 @@ class OPQ(object):
         you can see the reduction of error for each iteration clearly
 
         Args:
-            vecs: (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
+            vecs (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
+            parametric_init (bool): Whether to initialize rotation using parametric assumption.
             pq_iter (int): The number of iteration for k-means
-            rotation_iter (int): The number of iteration for leraning rotation
+            rotation_iter (int): The number of iteration for learning rotation
             seed (int): The seed for random process
 
         Returns:
@@ -97,7 +144,10 @@ class OPQ(object):
         assert vecs.dtype == np.float32
         assert vecs.ndim == 2
         _, D = vecs.shape
-        self.R = np.eye(D, dtype=np.float32)
+        if parametric_init:
+            self.R = self.eigenvalue_allocation(vecs)
+        else:
+            self.R = np.eye(D, dtype=np.float32)
 
         for i in range(rotation_iter):
             if self.verbose:
