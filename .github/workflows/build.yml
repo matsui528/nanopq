@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.8]  #[3.8, 3.9]
+        python-version: [3.8]  #[3.8, 3.9] # faiss doesn't support py3.9 as of Jan 2022. Should be updated.
 
     steps:
     - name: Checkout
@@ -22,25 +22,20 @@ jobs:
         miniconda-version: "latest"
         python-version: ${{ matrix.python-version }}
 
-    # - name: Set up Python ${{ matrix.python-version }}
-    #   uses: actions/setup-python@v2
-    #   with:
-    #     python-version: ${{ matrix.python-version }}
-
     - name: Install dependencies
-      shell: bash -l {0}
+      shell: bash -l {0}    # to activate conda
       run: |
         pip install pytest
         python setup.py install
         conda install -c pytorch faiss-cpu
 
-        which python
-        python --version
-        which pip
-        which conda
-        python -c "import faiss; print(f'faiss version: {faiss.__version__}')"
+        # which python
+        # python --version
+        # which pip
+        # which conda
+        # python -c "import faiss; print(f'faiss version: {faiss.__version__}')"
         
     - name: Test with pytest
-      shell: bash -l {0}
+      shell: bash -l {0}   # to activate conda
       run: |
         make test
