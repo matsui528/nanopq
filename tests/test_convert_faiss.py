@@ -44,7 +44,7 @@ class TestSuite(unittest.TestCase):
         self.assertTrue(np.array_equal(Cb_nanopq, Cb_faiss))
 
         # Search result should be same
-        topk = 100
+        topk = 10
         pq_faiss.add(Xb)
         _, ids1 = pq_faiss.search(x=Xq, k=topk)
         ids2 = np.array(
@@ -53,6 +53,7 @@ class TestSuite(unittest.TestCase):
                 for xq in Xq
             ]
         )
+
         self.assertTrue(np.array_equal(ids1, ids2))
 
     def test_faiss_to_nanopq(self):
