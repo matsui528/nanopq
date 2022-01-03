@@ -29,6 +29,12 @@ jobs:
 
     - name: Install dependencies
       run: |
+        which pip
+        which conda
+        which python
+
+
+
         pip install pytest
         python setup.py install
         conda install -c pytorch faiss-cpu
