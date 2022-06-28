@@ -56,7 +56,7 @@ class TestSuite(unittest.TestCase):
 
         self.assertTrue(np.array_equal(ids1, ids2))
 
-    def test_faiss_to_nanopq(self):
+    def test_faiss_to_nanopq_pq(self):
         D, M, Ks = 32, 4, 256
         Nt, Nb, Nq = 2000, 10000, 100
         nbits = int(np.log2(Ks))
@@ -70,6 +70,41 @@ class TestSuite(unittest.TestCase):
         pq_faiss.add(x=Xb)
 
         pq_nanopq, Cb_faiss = nanopq.faiss_to_nanopq(pq_faiss=pq_faiss)
+        self.assertIsInstance(pq_nanopq, nanopq.PQ)
+        self.assertEqual(pq_nanopq.codewords.shape, (M, Ks, int(D / M)))
+
+        # Encoded results should be same
+        Cb_nanopq = pq_nanopq.encode(vecs=Xb)
+        self.assertTrue(np.array_equal(Cb_nanopq, Cb_faiss))
+
+        # Search result should be same
+        topk = 100
+        _, ids1 = pq_faiss.search(x=Xq, k=topk)
+        ids2 = np.array(
+            [
+                np.argsort(pq_nanopq.dtable(query=xq).adist(codes=Cb_nanopq))[:topk]
+                for xq in Xq
+            ]
+        )
+        self.assertTrue(np.array_equal(ids1, ids2))
+
+    def test_faiss_to_nanopq_opq(self):
+        D, M, Ks = 32, 4, 256
+        Nt, Nb, Nq = 2000, 10000, 100
+        nbits = int(np.log2(Ks))
+        assert nbits == 8
+        Xt = np.random.rand(Nt, D).astype(np.float32)
+        Xb = np.random.rand(Nb, D).astype(np.float32)
+        Xq = np.random.rand(Nq, D).astype(np.float32)
+
+        pq_faiss = faiss.IndexPQ(D, M, nbits)
+        opq_matrix = faiss.OPQMatrix(D, M=M)
+        pq_faiss = faiss.IndexPreTransform(opq_matrix, pq_faiss)
+        pq_faiss.train(x=Xt)
+        pq_faiss.add(x=Xb)
+
+        pq_nanopq, Cb_faiss = nanopq.faiss_to_nanopq(pq_faiss=pq_faiss)
+        self.assertIsInstance(pq_nanopq, nanopq.OPQ)
         self.assertEqual(pq_nanopq.codewords.shape, (M, Ks, int(D / M)))
 
         # Encoded results should be same

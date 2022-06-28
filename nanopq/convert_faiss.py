@@ -9,6 +9,7 @@ else:
 
 import numpy as np
 
+from .opq import OPQ
 from .pq import PQ
 
 
@@ -48,29 +49,51 @@ def nanopq_to_faiss(pq_nanopq):
 
 
 def faiss_to_nanopq(pq_faiss):
-    """Convert a `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_ instance to :class:`nanopq.PQ`.
+    """Convert a `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_ 
+    or a `faiss.IndexPreTransform <https://github.com/facebookresearch/faiss/blob/master/IndexPreTransform.h>`_ instance to :class:`nanopq.OPQ`.
     To use this function, `faiss module needs to be installed <https://github.com/facebookresearch/faiss/blob/master/INSTALL.md>`_.
 
     Args:
-        pq_faiss (faiss.IndexPQ): An input PQ instance.
+        pq_faiss (Union[faiss.IndexPQ, faiss.IndexPreTransform]): An input PQ or OPQ instance.
 
     Returns:
         tuple:
-            * nanopq.PQ: A converted PQ instance, with the same codewords to the input.
+            * Union[nanopq.PQ, nanopq.OPQ]: A converted PQ or OPQ instance, with the same codewords to the input.
             * np.ndarray: Stored PQ codes in the input IndexPQ, with the shape=(N, M). This will be empty if codes are not stored
 
     """
-    assert isinstance(pq_faiss, faiss.IndexPQ), "Error. pq_faiss must be IndexPQ"
+    assert isinstance(
+        pq_faiss, (faiss.IndexPQ, faiss.IndexPreTransform)
+    ), "Error. pq_faiss must be IndexPQ or IndexPreTransform"
     assert pq_faiss.is_trained, "Error. pq_faiss must have been trained"
 
-    pq_nanopq = PQ(M=pq_faiss.pq.M, Ks=int(2 ** pq_faiss.pq.nbits))
-    pq_nanopq.Ds = int(pq_faiss.pq.d / pq_faiss.pq.M)
+    if isinstance(pq_faiss, faiss.IndexPreTransform):
+        opq_matrix: faiss.LinearTransform = faiss.downcast_VectorTransform(
+            pq_faiss.chain.at(0)
+        )
+        pq_faiss: faiss.IndexPQ = faiss.downcast_index(pq_faiss.index)
+        pq_nanopq = OPQ(M=pq_faiss.pq.M, Ks=int(2**pq_faiss.pq.nbits))
+        pq_nanopq.pq.Ds = int(pq_faiss.pq.d / pq_faiss.pq.M)
 
-    # Extract codewords from pq_IndexPQ.ProductQuantizer, reshape them to M*Ks*Ds
-    codewords = faiss.vector_to_array(pq_faiss.pq.centroids).reshape(
-        pq_nanopq.M, pq_nanopq.Ks, pq_nanopq.Ds
-    )
+        # Extract codewords from pq_IndexPQ.ProductQuantizer, reshape them to M*Ks*Ds
+        codewords = faiss.vector_to_array(pq_faiss.pq.centroids).reshape(
+            pq_nanopq.M, pq_nanopq.Ks, pq_nanopq.Ds
+        )
 
-    pq_nanopq.codewords = codewords
+        pq_nanopq.pq.codewords = codewords
+        pq_nanopq.R = (
+            faiss.vector_to_array(opq_matrix.A)
+            .reshape(opq_matrix.d_out, opq_matrix.d_in)
+            .transpose(1, 0)
+        )
+    else:
+        pq_nanopq = PQ(M=pq_faiss.pq.M, Ks=int(2**pq_faiss.pq.nbits))
+        pq_nanopq.Ds = int(pq_faiss.pq.d / pq_faiss.pq.M)
+
+        # Extract codewords from pq_IndexPQ.ProductQuantizer, reshape them to M*Ks*Ds
+        codewords = faiss.vector_to_array(pq_faiss.pq.centroids).reshape(
+            pq_nanopq.M, pq_nanopq.Ks, pq_nanopq.Ds
+        )
+        pq_nanopq.codewords = codewords
 
     return pq_nanopq, faiss.vector_to_array(pq_faiss.codes).reshape(-1, pq_faiss.pq.M)
