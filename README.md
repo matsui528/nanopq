@@ -47,6 +47,7 @@ dists = pq.dtable(query).adist(X_code)  # (10000, )
 
 ## Contributors
 - [@calvinmccarter](https://github.com/calvinmccarter) implemented parametric initialization for OPQ ([#14](https://github.com/matsui528/nanopq/pull/14))
+- [@de9uch1](https://github.com/de9uch1) exntended the interface to the faiss so that OPQ can be handled ([#19](https://github.com/matsui528/nanopq/pull/19))
 
 
 ## Reference
