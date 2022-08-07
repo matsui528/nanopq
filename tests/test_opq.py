@@ -70,17 +70,17 @@ class TestSuite(unittest.TestCase):
         )
 
     def test_parametric_init(self):
-        N, D, M, Ks = 100, 12, 4, 10
+        N, D, M, Ks = 100, 12, 2, 20
         X = np.random.random((N, D)).astype(np.float32)
         opq = nanopq.OPQ(M=M, Ks=Ks)
         opq.fit(X, parametric_init=False, rotation_iter=1)
-        err_init = np.linalg.norm(opq.rotate(X) - opq.decode(opq.encode(X)))
+        err_init = np.linalg.norm(X - opq.decode(opq.encode(X)))
 
         opq = nanopq.OPQ(M=M, Ks=Ks)
         opq.fit(X, parametric_init=True, rotation_iter=1)
-        err = np.linalg.norm(opq.rotate(X) - opq.decode(opq.encode(X)))
+        err = np.linalg.norm(X - opq.decode(opq.encode(X)))
 
-        self.assertLess(err_init, err)
+        self.assertLess(err, err_init)
 
 
 if __name__ == "__main__":
