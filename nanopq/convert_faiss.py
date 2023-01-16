@@ -12,6 +12,11 @@ import numpy as np
 from .opq import OPQ
 from .pq import PQ
 
+faiss_metric_map = {
+    'l2': faiss.METRIC_L2,
+    'dot': faiss.METRIC_INNER_PRODUCT,
+    'angular': faiss.METRIC_INNER_PRODUCT
+}
 
 def nanopq_to_faiss(pq_nanopq):
     """Convert a :class:`nanopq.PQ` instance to `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_.
@@ -31,7 +36,7 @@ def nanopq_to_faiss(pq_nanopq):
     D = pq_nanopq.Ds * pq_nanopq.M
     nbits = {np.uint8: 8, np.uint16: 16, np.uint32: 32}[pq_nanopq.code_dtype]
 
-    pq_faiss = faiss.IndexPQ(D, pq_nanopq.M, nbits)
+    pq_faiss = faiss.IndexPQ(D, pq_nanopq.M, nbits, faiss_metric_map[pq_nanopq.metric])
 
     for m in range(pq_nanopq.M):
         # Prepare std::vector<float>
