@@ -19,7 +19,7 @@ class PQ(object):
         M (int): The number of sub-space
         Ks (int): The number of codewords for each subspace
             (typically 256, so that each sub-vector is quantized
-            into 256 bits = 1 byte = uint8)
+            into 8 bits = 1 byte = uint8)
         verbose (bool): Verbose flag
 
     Attributes:
