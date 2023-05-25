@@ -25,6 +25,7 @@ jobs:
     - name: Install dependencies
       shell: bash -l {0}    # to activate conda
       run: |
+        conda install numpy  # because of faiss, we need to use numpy of conda (not pip)
         pip install pytest
         python setup.py install
         conda install -c pytorch faiss-cpu
