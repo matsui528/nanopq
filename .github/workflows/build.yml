@@ -27,7 +27,7 @@ jobs:
       run: |
         pip install pytest
         python setup.py install
-        conda install -c pytorch faiss-cpu<1.7.4   # After the bug of 1.7.4 is fixed, let's use the latest version
+        conda install -c pytorch "faiss-cpu<1.7.4"   # After the bug of 1.7.4 is fixed, let's use the latest version
         
     - name: Test with pytest
       shell: bash -l {0}   # to activate conda
