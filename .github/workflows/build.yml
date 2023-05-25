@@ -27,8 +27,7 @@ jobs:
       run: |
         pip install pytest
         python setup.py install
-        # conda install -c pytorch faiss-cpu
-        conda install -c conda-forge faiss-cpu
+        conda install -c pytorch faiss-cpu=1.7.3
         
     - name: Test with pytest
       shell: bash -l {0}   # to activate conda
