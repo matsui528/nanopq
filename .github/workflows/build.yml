@@ -35,7 +35,7 @@ jobs:
         elif [ "${{ matrix.os }}" = "macos-latest" ]; then
           conda install -c pytorch faiss-cpu==1.7.3
         elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-          conda install -c pytorch faiss-cpu==1.7.2
+          conda install -c pytorch faiss-cpu==1.7.4
         fi
         
     - name: Test with pytest
