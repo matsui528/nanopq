@@ -202,7 +202,7 @@ class PQ(object):
 
 
 class DistanceTable(object):
-    """Distance table from query to codeworkds.
+    """Distance table from query to codewords.
     Given a query vector, a PQ/OPQ instance compute this DistanceTable class
     using :func:`PQ.dtable` or :func:`OPQ.dtable`.
     The Asymmetric Distance from query to each database codes can be computed
