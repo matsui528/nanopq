@@ -201,6 +201,7 @@ class PQ(object):
             dtable[m, :] = metric_function_map[self.metric](
                 query_sub, self.codewords[m]
             )
+            
             # In case of L2, the above line would be:
             # dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
@@ -250,7 +251,7 @@ class DistanceTable(object):
         N, M = codes.shape
         assert M == self.dtable.shape[0]
 
-        # Fetch distance values using codes. The following codes are
+        # Fetch distance values using codes.
         dists = np.sum(self.dtable[range(M), codes], axis=1)
 
         # The above line is equivalent to the followings:
