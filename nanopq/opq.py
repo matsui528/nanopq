@@ -1,6 +1,7 @@
+from collections import defaultdict
+
 import numpy as np
 
-from collections import defaultdict
 from .pq import PQ
 
 
@@ -26,7 +27,7 @@ class OPQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric='l2', verbose=True):
+    def __init__(self, M, Ks=256, metric="l2", verbose=True):
         self.pq = PQ(M, Ks, metric=metric, verbose=verbose)
         self.R = None
 
@@ -117,7 +118,15 @@ class OPQ(object):
         R = R.astype(dtype=np.float32)
         return R
 
-    def fit(self, vecs, parametric_init=False, pq_iter=20, rotation_iter=10, seed=123, minit='points'):
+    def fit(
+        self,
+        vecs,
+        parametric_init=False,
+        pq_iter=20,
+        rotation_iter=10,
+        seed=123,
+        minit="points",
+    ):
         """Given training vectors, this function alternatively trains
         (a) codewords and (b) a rotation matrix.
         The procedure of training codewords is same as :func:`PQ.fit`.
