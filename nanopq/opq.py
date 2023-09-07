@@ -1,7 +1,7 @@
 import numpy as np
 
 from collections import defaultdict
-from .pq import PQ, DistanceTable
+from .pq import PQ
 
 
 class OPQ(object):
