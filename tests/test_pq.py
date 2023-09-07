@@ -31,6 +31,7 @@ class TestSuite(unittest.TestCase):
         pq2 = nanopq.PQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
 
+
     def test_eq(self):
         import copy
 

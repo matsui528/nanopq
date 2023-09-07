@@ -26,8 +26,8 @@ class OPQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric='l2', minit='points', verbose=True):
-        self.pq = PQ(M, Ks, metric=metric, minit=minit, verbose=verbose)
+    def __init__(self, M, Ks=256, metric='l2', verbose=True):
+        self.pq = PQ(M, Ks, metric=metric, verbose=verbose)
         self.R = None
 
     def __eq__(self, other):
@@ -117,7 +117,7 @@ class OPQ(object):
         R = R.astype(dtype=np.float32)
         return R
 
-    def fit(self, vecs, parametric_init=False, pq_iter=20, rotation_iter=10, seed=123):
+    def fit(self, vecs, parametric_init=False, pq_iter=20, rotation_iter=10, seed=123, minit='points'):
         """Given training vectors, this function alternatively trains
         (a) codewords and (b) a rotation matrix.
         The procedure of training codewords is same as :func:`PQ.fit`.
@@ -136,6 +136,7 @@ class OPQ(object):
             pq_iter (int): The number of iteration for k-means
             rotation_iter (int): The number of iteration for learning rotation
             seed (int): The seed for random process
+            minit (str): The method for initialization of centroids for k-means (either 'random', '++', 'points', 'matrix')
 
         Returns:
             object: self
@@ -158,10 +159,10 @@ class OPQ(object):
             pq_tmp = PQ(M=self.M, Ks=self.Ks, verbose=self.verbose)
             if i == rotation_iter - 1:
                 # In the final loop, run the full training
-                pq_tmp.fit(X, iter=pq_iter, seed=seed)
+                pq_tmp.fit(X, iter=pq_iter, seed=seed, minit=minit)
             else:
                 # During the training for OPQ, just run one-pass (iter=1) PQ training
-                pq_tmp.fit(X, iter=1, seed=seed)
+                pq_tmp.fit(X, iter=1, seed=seed, minit=minit)
 
             # (b) Update a rotation matrix R
             X_ = pq_tmp.decode(pq_tmp.encode(X))
