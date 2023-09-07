@@ -26,7 +26,7 @@ class OPQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric='l2', minit='random', verbose=True):
+    def __init__(self, M, Ks=256, metric='l2', minit='points', verbose=True):
         self.pq = PQ(M, Ks, metric=metric, minit=minit, verbose=verbose)
         self.R = None
 

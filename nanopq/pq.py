@@ -1,4 +1,3 @@
-import warnings
 import numpy as np
 from scipy.cluster.vq import kmeans2, vq
 
@@ -8,16 +7,11 @@ def dist_l2(q, x):
 
 
 def dist_ip(q, x):
-    return np.matmul(x, q[None, :].T).sum(axis=-1)
-
-
-def dist_angular(q, x):
-    return dist_ip(q, x)
+    return q @ x.T
 
 
 metric_function_map = {
     'l2': dist_l2,
-    'angular': dist_angular,
     'dot': dist_ip
 }
 
@@ -39,7 +33,7 @@ class PQ(object):
         M (int): The number of sub-space
         Ks (int): The number of codewords for each subspace
             (typically 256, so that each sub-vector is quantized
-            into 256 bits = 1 byte = uint8)
+            into 8 bits = 1 byte = uint8)
         metric (str): Type of metric used among vectors
         verbose (bool): Verbose flag
 
@@ -55,9 +49,9 @@ class PQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric='l2', minit='random', verbose=True):
+    def __init__(self, M, Ks=256, metric='l2', minit='points', verbose=True):
         assert 0 < Ks <= 2 ** 32
-        assert metric in ['l2', 'dot', 'angular']
+        assert metric in ['l2', 'dot']
         assert minit in ['random', '++', 'points', 'matrix']
         self.M, self.Ks, self.verbose, self.metric = M, Ks, verbose, metric
         self.code_dtype = (
@@ -195,10 +189,11 @@ class PQ(object):
         dtable = np.empty((self.M, self.Ks), dtype=np.float32)
         for m in range(self.M):
             query_sub = query[m * self.Ds: (m + 1) * self.Ds]
-            dtable[m, :] = metric_function_map[self.metric](
-                query_sub, self.codewords[m])
+            dtable[m, :] = metric_function_map[self.metric](query_sub, self.codewords[m])
+            # In case lf L2, the above line would be: 
+            # dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
-        return DistanceTable(dtable, D=D, metric=self.metric)
+        return DistanceTable(dtable, metric=self.metric)
 
 
 class DistanceTable(object):
@@ -220,13 +215,12 @@ class DistanceTable(object):
 
     """
 
-    def __init__(self, dtable, D, metric='l2'):
+    def __init__(self, dtable, metric='l2'):
         assert dtable.ndim == 2
         assert dtable.dtype == np.float32
-        assert metric in ['l2', 'dot', 'angular']
+        assert metric in ['l2', 'dot']
         self.dtable = dtable
         self.metric = metric
-        self.D = D
 
     def adist(self, codes):
         """Given PQ-codes, compute Asymmetric Distances between the query (self.dtable)
@@ -247,8 +241,6 @@ class DistanceTable(object):
 
         # Fetch distance values using codes. The following codes are
         dists = np.sum(self.dtable[range(M), codes], axis=1)
-        if self.metric == 'angular':
-            dists = 1 - dists
 
         # The above line is equivalent to the followings:
         # dists = np.zeros((N, )).astype(np.float32)
