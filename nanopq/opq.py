@@ -26,8 +26,8 @@ class OPQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, verbose=True):
-        self.pq = PQ(M, Ks, verbose)
+    def __init__(self, M, Ks=256, metric='l2', minit='random', verbose=True):
+        self.pq = PQ(M, Ks, metric=metric, minit=minit, verbose=verbose)
         self.R = None
 
     def __eq__(self, other):

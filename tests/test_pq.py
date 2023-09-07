@@ -97,6 +97,40 @@ class TestSuite(unittest.TestCase):
         )
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
         self.assertTrue(pq == pq2)
+        
+    def test_ip(self):
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
+        pq = nanopq.PQ(M=M, Ks=Ks, metric='dot')
+        pq.fit(X)
+        X_ = pq.encode(X)
+        q = X[13]
+        dist1 = pq.dtable(q).adist(X_)
+        dtable = np.empty((pq.M, pq.Ks), dtype=np.float32)
+        for m in range(pq.M):
+            query_sub = q[m * pq.Ds : (m + 1) * pq.Ds]
+            dtable[m, :] = np.matmul(pq.codewords[m], query_sub[None, :].T).sum(axis=-1)
+        dist2 = np.sum(dtable[range(M), X_], axis=1)
+        self.assertTrue((dist1 == dist2).all())
+        self.assertTrue(abs(np.mean(np.matmul(X, q[:, None]).squeeze() - dist1)) < 1e-7)
+        
+    def test_angular(self):
+        N, D, M, Ks = 100, 12, 4, 10
+        X = np.random.random((N, D)).astype(np.float32)
+        X[np.linalg.norm(X, axis=1) == 0] = 1.0 / np.sqrt(X.shape[1])
+        X /= np.linalg.norm(X, ord=2, axis=-1)[:, None]
+        pq = nanopq.PQ(M=M, Ks=Ks, metric='angular')
+        pq.fit(X)
+        X_ = pq.encode(X)
+        q = X[13]
+        dist1 = pq.dtable(q).adist(X_)
+        dtable = np.empty((pq.M, pq.Ks), dtype=np.float32)
+        for m in range(pq.M):
+            query_sub = q[m * pq.Ds : (m + 1) * pq.Ds]
+            dtable[m, :] = np.matmul(pq.codewords[m], query_sub[None, :].T).sum(axis=-1)
+        dist2 = 1 - np.sum(dtable[range(M), X_], axis=1) 
+        self.assertTrue((dist1 == dist2).all())
+        self.assertTrue(abs(np.mean((1-np.matmul(X, q[:, None]) / (np.linalg.norm(q) * np.linalg.norm(X, ord=2, axis=-1))) - dist1)) < 1e-7)
 
 
 if __name__ == "__main__":
