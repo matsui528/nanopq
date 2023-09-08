@@ -13,10 +13,11 @@ from .opq import OPQ
 from .pq import PQ
 
 faiss_metric_map = {
-    'l2': faiss.METRIC_L2,
-    'dot': faiss.METRIC_INNER_PRODUCT,
-    'angular': faiss.METRIC_INNER_PRODUCT
+    "l2": faiss.METRIC_L2,
+    "dot": faiss.METRIC_INNER_PRODUCT,
+    "angular": faiss.METRIC_INNER_PRODUCT,
 }
+
 
 def nanopq_to_faiss(pq_nanopq):
     """Convert a :class:`nanopq.PQ` instance to `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_.
@@ -54,7 +55,7 @@ def nanopq_to_faiss(pq_nanopq):
 
 
 def faiss_to_nanopq(pq_faiss):
-    """Convert a `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_ 
+    """Convert a `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_
     or a `faiss.IndexPreTransform <https://github.com/facebookresearch/faiss/blob/master/IndexPreTransform.h>`_ instance to :class:`nanopq.OPQ`.
     To use this function, `faiss module needs to be installed <https://github.com/facebookresearch/faiss/blob/master/INSTALL.md>`_.
 

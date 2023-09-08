@@ -1,2 +1,3 @@
 numpy
 scipy
+faiss-cpu    # To render docs easily, use un-official pypi version of faiss

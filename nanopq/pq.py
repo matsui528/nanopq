@@ -10,10 +10,7 @@ def dist_ip(q, x):
     return q @ x.T
 
 
-metric_function_map = {
-    'l2': dist_l2,
-    'dot': dist_ip
-}
+metric_function_map = {"l2": dist_l2, "dot": dist_ip}
 
 
 class PQ(object):
@@ -50,34 +47,46 @@ class PQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric='l2', verbose=True):
-        assert 0 < Ks <= 2 ** 32
-        assert metric in ['l2', 'dot']
+    def __init__(self, M, Ks=256, metric="l2", verbose=True):
+        assert 0 < Ks <= 2**32
+        assert metric in ["l2", "dot"]
         self.M, self.Ks, self.metric, self.verbose = M, Ks, metric, verbose
         self.code_dtype = (
-            np.uint8 if Ks <= 2 ** 8 else (np.uint16 if Ks <= 2 ** 16 else np.uint32)
+            np.uint8 if Ks <= 2**8 else (np.uint16 if Ks <= 2**16 else np.uint32)
         )
         self.codewords = None
         self.Ds = None
 
         if verbose:
-            print("M: {}, Ks: {}, metric : {}, code_dtype: {}".format(
-                M, Ks, self.code_dtype, metric))
+            print(
+                "M: {}, Ks: {}, metric : {}, code_dtype: {}".format(
+                    M, Ks, self.code_dtype, metric
+                )
+            )
 
     def __eq__(self, other):
         if isinstance(other, PQ):
-            return (self.M, self.Ks, self.metric, self.verbose, self.code_dtype, self.Ds) == (
+            return (
+                self.M,
+                self.Ks,
+                self.metric,
+                self.verbose,
+                self.code_dtype,
+                self.Ds,
+            ) == (
                 other.M,
                 other.Ks,
                 other.metric,
                 other.verbose,
                 other.code_dtype,
                 other.Ds,
-            ) and np.array_equal(self.codewords, other.codewords)
+            ) and np.array_equal(
+                self.codewords, other.codewords
+            )
         else:
             return False
 
-    def fit(self, vecs, iter=20, seed=123, minit='points'):
+    def fit(self, vecs, iter=20, seed=123, minit="points"):
         """Given training vectors, run k-means for each sub-space and create
         codewords for each sub-space.
 
@@ -98,7 +107,7 @@ class PQ(object):
         N, D = vecs.shape
         assert self.Ks < N, "the number of training vector should be more than Ks"
         assert D % self.M == 0, "input dimension must be dividable by M"
-        assert minit in ['random', '++', 'points', 'matrix']
+        assert minit in ["random", "++", "points", "matrix"]
         self.Ds = int(D / self.M)
 
         np.random.seed(seed)
@@ -110,9 +119,8 @@ class PQ(object):
         for m in range(self.M):
             if self.verbose:
                 print("Training the subspace: {} / {}".format(m, self.M))
-            vecs_sub = vecs[:, m * self.Ds: (m + 1) * self.Ds]
-            self.codewords[m], _ = kmeans2(
-                vecs_sub, self.Ks, iter=iter, minit=minit)
+            vecs_sub = vecs[:, m * self.Ds : (m + 1) * self.Ds]
+            self.codewords[m], _ = kmeans2(vecs_sub, self.Ks, iter=iter, minit=minit)
         return self
 
     def encode(self, vecs):
@@ -189,9 +197,12 @@ class PQ(object):
         # dtable[m][ks] : distance between m-th subvec and ks-th codeword of m-th codewords
         dtable = np.empty((self.M, self.Ks), dtype=np.float32)
         for m in range(self.M):
-            query_sub = query[m * self.Ds: (m + 1) * self.Ds]
-            dtable[m, :] = metric_function_map[self.metric](query_sub, self.codewords[m])
-            # In case of L2, the above line would be: 
+            query_sub = query[m * self.Ds : (m + 1) * self.Ds]
+            dtable[m, :] = metric_function_map[self.metric](
+                query_sub, self.codewords[m]
+            )
+            
+            # In case of L2, the above line would be:
             # dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
         return DistanceTable(dtable, metric=self.metric)
@@ -216,10 +227,10 @@ class DistanceTable(object):
 
     """
 
-    def __init__(self, dtable, metric='l2'):
+    def __init__(self, dtable, metric="l2"):
         assert dtable.ndim == 2
         assert dtable.dtype == np.float32
-        assert metric in ['l2', 'dot']
+        assert metric in ["l2", "dot"]
         self.dtable = dtable
         self.metric = metric
 
@@ -240,7 +251,7 @@ class DistanceTable(object):
         N, M = codes.shape
         assert M == self.dtable.shape[0]
 
-        # Fetch distance values using codes. The following codes are
+        # Fetch distance values using codes.
         dists = np.sum(self.dtable[range(M), codes], axis=1)
 
         # The above line is equivalent to the followings:

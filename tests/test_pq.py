@@ -15,7 +15,7 @@ class TestSuite(unittest.TestCase):
     def test_instantiate(self):
         pq1 = nanopq.PQ(M=4, Ks=256)
         pq2 = nanopq.PQ(M=4, Ks=500)
-        pq3 = nanopq.PQ(M=4, Ks=2 ** 16 + 10)
+        pq3 = nanopq.PQ(M=4, Ks=2**16 + 10)
         self.assertEqual(pq1.code_dtype, np.uint8)
         self.assertEqual(pq2.code_dtype, np.uint16)
         self.assertEqual(pq3.code_dtype, np.uint32)
@@ -30,7 +30,6 @@ class TestSuite(unittest.TestCase):
 
         pq2 = nanopq.PQ(M=M, Ks=Ks).fit(X)  # Can be called as a chain
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
-
 
     def test_eq(self):
         import copy
@@ -98,11 +97,11 @@ class TestSuite(unittest.TestCase):
         )
         self.assertTrue(np.allclose(pq.codewords, pq2.codewords))
         self.assertTrue(pq == pq2)
-        
+
     def test_ip(self):
         N, D, M, Ks = 100, 12, 4, 10
         X = np.random.random((N, D)).astype(np.float32)
-        pq = nanopq.PQ(M=M, Ks=Ks, metric='dot')
+        pq = nanopq.PQ(M=M, Ks=Ks, metric="dot")
         pq.fit(X)
         X_ = pq.encode(X)
         q = X[13]
@@ -114,7 +113,7 @@ class TestSuite(unittest.TestCase):
         dist2 = np.sum(dtable[range(M), X_], axis=1)
         self.assertTrue((dist1 == dist2).all())
         self.assertTrue(abs(np.mean(np.matmul(X, q[:, None]).squeeze() - dist1)) < 1e-7)
-        
+
 
 if __name__ == "__main__":
     unittest.main()

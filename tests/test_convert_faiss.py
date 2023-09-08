@@ -142,12 +142,12 @@ class TestSuite(unittest.TestCase):
         Xb_nanopq_ = pq_nanopq.decode(codes=Cb_nanopq)
 
         # Reconstruction error should be almost identical
-        avg_relative_error_faiss = ((Xb - Xb_faiss_) ** 2).sum() / (Xb ** 2).sum()
-        avg_relative_error_nanopq = ((Xb - Xb_nanopq_) ** 2).sum() / (Xb ** 2).sum()
+        avg_relative_error_faiss = ((Xb - Xb_faiss_) ** 2).sum() / (Xb**2).sum()
+        avg_relative_error_nanopq = ((Xb - Xb_nanopq_) ** 2).sum() / (Xb**2).sum()
         diff_rel = (
             avg_relative_error_faiss - avg_relative_error_nanopq
         ) / avg_relative_error_faiss
-        diff_rel = np.sqrt(diff_rel ** 2)
+        diff_rel = np.sqrt(diff_rel**2)
         print("avg_rel_error_faiss:", avg_relative_error_faiss)
         print("avg_rel_error_nanopq:", avg_relative_error_nanopq)
         print("diff rel:", diff_rel)
