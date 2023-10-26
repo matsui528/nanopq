@@ -15,9 +15,14 @@ jobs:
     # - name: Publish package distributions to PyPI
     #   uses: pypa/gh-action-pypi-publish@release/v1
 
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Build package
       run: |
-        make build
+        python setup.py sdist bdist_wheel
+        ls
+
 
     - name: Publish package distributions to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
