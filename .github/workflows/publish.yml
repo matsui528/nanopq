@@ -16,7 +16,7 @@ jobs:
     #   uses: pypa/gh-action-pypi-publish@release/v1
 
     - name: Build package
-      runs: |
+      run: |
         make build
 
     - name: Publish package distributions to TestPyPI
