@@ -1,6 +1,8 @@
 name: Publishing
 
-on: [push]
+on:
+  release:
+    types: [published]
 
 jobs:
   pypi-publish:
