@@ -6,17 +6,18 @@ if spec is None:
     pass  # If faiss hasn't been installed. Just skip
 else:
     import faiss
+    faiss_metric_map = {
+        "l2": faiss.METRIC_L2,
+        "dot": faiss.METRIC_INNER_PRODUCT,
+        "angular": faiss.METRIC_INNER_PRODUCT,
+    }
+
 
 import numpy as np
 
 from .opq import OPQ
 from .pq import PQ
 
-faiss_metric_map = {
-    "l2": faiss.METRIC_L2,
-    "dot": faiss.METRIC_INNER_PRODUCT,
-    "angular": faiss.METRIC_INNER_PRODUCT,
-}
 
 
 def nanopq_to_faiss(pq_nanopq):
