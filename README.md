@@ -8,6 +8,7 @@
 Nano Product Quantization (nanopq): a vanilla implementation of Product Quantization (PQ) and Optimized Product Quantization (OPQ) written in pure python without any third party dependencies.
 
 
+
 ## Installing
 You can install the package via pip. This library works with Python 3.5+ on linux.
 ```
