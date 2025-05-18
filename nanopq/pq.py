@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import kmeans2, vq
+from typing import Literal
 
 
 def dist_l2(q, x):
@@ -47,7 +48,7 @@ class PQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric="l2", verbose=True):
+    def __init__(self, M, Ks=256, metric: Literal["l2", "dot"] = "l2", verbose=True):
         assert 0 < Ks <= 2**32
         assert metric in ["l2", "dot"]
         self.M, self.Ks, self.metric, self.verbose = M, Ks, metric, verbose
@@ -227,7 +228,7 @@ class DistanceTable(object):
 
     """
 
-    def __init__(self, dtable, metric="l2"):
+    def __init__(self, dtable, metric: Literal["l2", "dot"] = "l2"):
         assert dtable.ndim == 2
         assert dtable.dtype == np.float32
         assert metric in ["l2", "dot"]
