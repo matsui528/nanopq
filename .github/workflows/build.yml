@@ -28,9 +28,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install .   # Install this library
+        pip install -r requirements-dev.txt # Install dev dependencies
         conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
         
     - name: Test with pytest
       shell: bash -l {0}   # to activate conda
       run: |
         make test
+
+    - name: Run mypy
+      shell: bash -l {0}   # to activate conda
+      run: |
+        mypy nanopq --ignore-missing-imports
