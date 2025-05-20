@@ -1,8 +1,7 @@
 .PHONY: test clean build format deploy test_deploy mypy
 
-test:
+test: mypy
 	pytest
-	mypy nanopq --ignore-missing-imports
 
 mypy:
 	mypy nanopq --ignore-missing-imports
