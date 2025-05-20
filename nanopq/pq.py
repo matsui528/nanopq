@@ -87,7 +87,7 @@ class PQ(object):
         else:
             return False
 
-    def fit(self, vecs, iter=20, seed=123, minit="points"):
+    def fit(self, vecs, iter=20, seed=123, minit: Literal["random", "++", "points", "matrix"]="points"):
         """Given training vectors, run k-means for each sub-space and create
         codewords for each sub-space.
 
