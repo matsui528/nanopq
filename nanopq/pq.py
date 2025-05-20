@@ -81,13 +81,17 @@ class PQ(object):
                 other.verbose,
                 other.code_dtype,
                 other.Ds,
-            ) and np.array_equal(
-                self.codewords, other.codewords
-            )
+            ) and np.array_equal(self.codewords, other.codewords)
         else:
             return False
 
-    def fit(self, vecs, iter=20, seed=123, minit: Literal["random", "++", "points", "matrix"]="points"):
+    def fit(
+        self,
+        vecs,
+        iter=20,
+        seed=123,
+        minit: Literal["random", "++", "points", "matrix"] = "points",
+    ):
         """Given training vectors, run k-means for each sub-space and create
         codewords for each sub-space.
 
@@ -202,7 +206,7 @@ class PQ(object):
             dtable[m, :] = metric_function_map[self.metric](
                 query_sub, self.codewords[m]
             )
-            
+
             # In case of L2, the above line would be:
             # dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
