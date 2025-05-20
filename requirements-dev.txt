@@ -1,1 +1,1 @@
-mypy 
+mypy
