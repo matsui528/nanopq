@@ -1,7 +1,10 @@
-.PHONY: test clean build format deploy test_deploy
+.PHONY: test clean build format deploy test_deploy mypy
 
-test:
+test: mypy
 	pytest
+
+mypy:
+	mypy nanopq --ignore-missing-imports
 
 clean:
 	rm -rf build dist *.egg-info

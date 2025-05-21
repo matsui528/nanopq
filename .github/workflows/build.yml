@@ -1,6 +1,6 @@
 name: Building
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
     - name: Checkout
@@ -28,9 +28,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install .   # Install this library
+        pip install .[dev] # Install dev dependencies
         conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
         
     - name: Test with pytest
       shell: bash -l {0}   # to activate conda
       run: |
         make test
+
+    - name: Run mypy
+      shell: bash -l {0}   # to activate conda
+      run: |
+        mypy nanopq --ignore-missing-imports

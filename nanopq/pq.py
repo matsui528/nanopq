@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import kmeans2, vq
+from typing import Literal
 
 
 def dist_l2(q, x):
@@ -47,7 +48,7 @@ class PQ(object):
 
     """
 
-    def __init__(self, M, Ks=256, metric="l2", verbose=True):
+    def __init__(self, M, Ks=256, metric: Literal["l2", "dot"] = "l2", verbose=True):
         assert 0 < Ks <= 2**32
         assert metric in ["l2", "dot"]
         self.M, self.Ks, self.metric, self.verbose = M, Ks, metric, verbose
@@ -80,13 +81,17 @@ class PQ(object):
                 other.verbose,
                 other.code_dtype,
                 other.Ds,
-            ) and np.array_equal(
-                self.codewords, other.codewords
-            )
+            ) and np.array_equal(self.codewords, other.codewords)
         else:
             return False
 
-    def fit(self, vecs, iter=20, seed=123, minit="points"):
+    def fit(
+        self,
+        vecs,
+        iter=20,
+        seed=123,
+        minit: Literal["random", "++", "points", "matrix"] = "points",
+    ):
         """Given training vectors, run k-means for each sub-space and create
         codewords for each sub-space.
 
@@ -201,7 +206,7 @@ class PQ(object):
             dtable[m, :] = metric_function_map[self.metric](
                 query_sub, self.codewords[m]
             )
-            
+
             # In case of L2, the above line would be:
             # dtable[m, :] = np.linalg.norm(self.codewords[m] - query_sub, axis=1) ** 2
 
@@ -227,7 +232,7 @@ class DistanceTable(object):
 
     """
 
-    def __init__(self, dtable, metric="l2"):
+    def __init__(self, dtable, metric: Literal["l2", "dot"] = "l2"):
         assert dtable.ndim == 2
         assert dtable.dtype == np.float32
         assert metric in ["l2", "dot"]
