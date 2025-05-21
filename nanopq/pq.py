@@ -32,14 +32,14 @@ class PQ(object):
         Ks (int): The number of codewords for each subspace
             (typically 256, so that each sub-vector is quantized
             into 8 bits = 1 byte = uint8)
-        metric (str): Type of metric used among vectors (either 'l2' or 'dot')
+        metric (Literal["l2", "dot"]): Type of metric used among vectors (either 'l2' or 'dot')
             Note that even for 'dot', kmeans and encoding are performed in the Euclidean space.
         verbose (bool): Verbose flag
 
     Attributes:
         M (int): The number of sub-space
         Ks (int): The number of codewords for each subspace
-        metric (str): Type of metric used among vectors
+        metric (Literal["l2", "dot"]): Type of metric used among vectors
         verbose (bool): Verbose flag
         code_dtype (object): dtype of PQ-code. Either np.uint{8, 16, 32}
         codewords (np.ndarray): shape=(M, Ks, Ds) with dtype=np.float32.
@@ -101,7 +101,7 @@ class PQ(object):
             vecs (np.ndarray): Training vectors with shape=(N, D) and dtype=np.float32.
             iter (int): The number of iteration for k-means
             seed (int): The seed for random process
-            minit (str): The method for initialization of centroids for k-means (either 'random', '++', 'points', 'matrix')
+            minit (Literal["random", "++", "points", "matrix"]): The method for initialization of centroids for k-means (either 'random', '++', 'points', 'matrix')
 
         Returns:
             object: self
@@ -223,7 +223,7 @@ class DistanceTable(object):
     Args:
         dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32
             computed by :func:`PQ.dtable` or :func:`OPQ.dtable`
-        metric (str): metric type to calculate distance
+        metric (Literal["l2", "dot"]): metric type to calculate distance
 
     Attributes:
         dtable (np.ndarray): Distance table with shape=(M, Ks) and dtype=np.float32.
