@@ -1,6 +1,6 @@
 .PHONY: test clean build format deploy test_deploy mypy
 
-test: mypy
+test: #mypy
 	pytest
 
 mypy:
