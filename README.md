@@ -52,7 +52,7 @@ dists = pq.dtable(query).adist(X_code)  # (10000, )
 - [@de9uch1](https://github.com/de9uch1) exntended the interface to the faiss so that OPQ can be handled ([#19](https://github.com/matsui528/nanopq/pull/19))
 - [@mpskex](https://github.com/mpskex) implemented (1) initialization of clustering and (2) dot-product for computation ([#24](https://github.com/matsui528/nanopq/pull/24))
 - [@lsb](https://github.com/lsb) fixed a typo ([#26](https://github.com/matsui528/nanopq/pull/26))
-
+- [@asukaminato0721](https://github.com/asukaminato0721) used Literal for string inputs ([#42](https://github.com/matsui528/nanopq/pull/42))
 
 ## Reference
 - [H. Jegou, M. Douze, and C. Schmid, "Product Quantization for Nearest Neighbor Search", IEEE TPAMI 2011](https://ieeexplore.ieee.org/document/5432202/) (the original paper of PQ)

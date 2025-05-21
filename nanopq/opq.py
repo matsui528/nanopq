@@ -20,6 +20,8 @@ class OPQ(object):
         M (int): The number of sub-spaces
         Ks (int): The number of codewords for each subspace (typically 256, so that each sub-vector is quantized
             into 8 bits = 1 byte = uint8)
+        metric (Literal["l2", "dot"]): Type of metric used among vectors (either 'l2' or 'dot')
+            Note that even for 'dot', kmeans and encoding are performed in the Euclidean space.
         verbose (bool): Verbose flag
 
     Attributes:
@@ -126,7 +128,7 @@ class OPQ(object):
         pq_iter=20,
         rotation_iter=10,
         seed=123,
-        minit="points",
+        minit: Literal["random", "++", "points", "matrix"] = "points",
     ):
         """Given training vectors, this function alternatively trains
         (a) codewords and (b) a rotation matrix.
@@ -146,7 +148,7 @@ class OPQ(object):
             pq_iter (int): The number of iteration for k-means
             rotation_iter (int): The number of iteration for learning rotation
             seed (int): The seed for random process
-            minit (str): The method for initialization of centroids for k-means (either 'random', '++', 'points', 'matrix')
+            minit (Literal["random", "++", "points", "matrix"]): The method for initialization of centroids for k-means (either 'random', '++', 'points', 'matrix')
 
         Returns:
             object: self
