@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import kmeans2, vq
-from typing import Literal
+from typing import Literal, Optional
 
 
 def dist_l2(q, x):
@@ -55,8 +55,8 @@ class PQ(object):
         self.code_dtype = (
             np.uint8 if Ks <= 2**8 else (np.uint16 if Ks <= 2**16 else np.uint32)
         )
-        self.codewords = None
-        self.Ds = None
+        self.codewords: Optional[np.ndarray] = None
+        self.Ds: Optional[int] = None
 
         if verbose:
             print(

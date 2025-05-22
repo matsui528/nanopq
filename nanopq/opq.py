@@ -1,7 +1,8 @@
 from collections import defaultdict
 
 import numpy as np
-from typing import Literal
+from typing import Literal, Optional
+from numpy.typing import NDArray
 
 from .pq import PQ
 
@@ -32,7 +33,7 @@ class OPQ(object):
 
     def __init__(self, M, Ks=256, metric: Literal["l2", "dot"] = "l2", verbose=True):
         self.pq = PQ(M, Ks, metric=metric, verbose=verbose)
-        self.R = None
+        self.R: Optional[NDArray[np.float32]] = None
 
     def __eq__(self, other):
         if isinstance(other, OPQ):
