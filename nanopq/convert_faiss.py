@@ -6,6 +6,7 @@ if spec is None:
     pass  # If faiss hasn't been installed. Just skip
 else:
     import faiss
+
     faiss_metric_map = {
         "l2": faiss.METRIC_L2,
         "dot": faiss.METRIC_INNER_PRODUCT,
@@ -17,7 +18,6 @@ import numpy as np
 
 from .opq import OPQ
 from .pq import PQ
-
 
 
 def nanopq_to_faiss(pq_nanopq):
@@ -32,9 +32,9 @@ def nanopq_to_faiss(pq_nanopq):
 
     """
     assert isinstance(pq_nanopq, PQ), "Error. pq_nanopq must be nanopq.pq"
-    assert (
-        pq_nanopq.codewords is not None
-    ), "Error. pq_nanopq.codewords must have been set beforehand"
+    assert pq_nanopq.codewords is not None, (
+        "Error. pq_nanopq.codewords must have been set beforehand"
+    )
     D = pq_nanopq.Ds * pq_nanopq.M
     nbits = {np.uint8: 8, np.uint16: 16, np.uint32: 32}[pq_nanopq.code_dtype]
 
@@ -69,9 +69,9 @@ def faiss_to_nanopq(pq_faiss):
             * np.ndarray: Stored PQ codes in the input IndexPQ, with the shape=(N, M). This will be empty if codes are not stored
 
     """
-    assert isinstance(
-        pq_faiss, (faiss.IndexPQ, faiss.IndexPreTransform)
-    ), "Error. pq_faiss must be IndexPQ or IndexPreTransform"
+    assert isinstance(pq_faiss, (faiss.IndexPQ, faiss.IndexPreTransform)), (
+        "Error. pq_faiss must be IndexPQ or IndexPreTransform"
+    )
     assert pq_faiss.is_trained, "Error. pq_faiss must have been trained"
 
     if isinstance(pq_faiss, faiss.IndexPreTransform):
