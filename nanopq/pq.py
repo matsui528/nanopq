@@ -143,6 +143,7 @@ class PQ(object):
         N, D = vecs.shape
         assert D == self.Ds * self.M, "input dimension must be Ds * M"
         assert self.Ds is not None, "Ds must be set by fit() before encode()"
+        assert isinstance(self.Ds, int), "Ds must be an integer"
         assert self.codewords is not None, "codewords must be set by fit() before encode()"
 
         # codes[n][m] : code of n-th vec, m-th subspace
