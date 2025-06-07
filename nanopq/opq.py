@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 import numpy as np
-from typing import Literal
+from typing import Literal, Optional
 
 from .pq import PQ
 
@@ -32,7 +32,7 @@ class OPQ(object):
 
     def __init__(self, M, Ks=256, metric: Literal["l2", "dot"] = "l2", verbose=True):
         self.pq = PQ(M, Ks, metric=metric, verbose=verbose)
-        self.R = None
+        self.R: Optional[np.ndarray] = None
 
     def __eq__(self, other):
         if isinstance(other, OPQ):
@@ -204,6 +204,7 @@ class OPQ(object):
         """
         assert vecs.dtype == np.float32
         assert vecs.ndim in [1, 2]
+        assert self.R is not None, "R must be set by fit() before rotate()"
 
         if vecs.ndim == 2:
             return vecs @ self.R
@@ -220,6 +221,7 @@ class OPQ(object):
             np.ndarray: PQ codes with shape=(N, M) and dtype=self.code_dtype
 
         """
+        assert self.R is not None, "R must be set by fit() before encode()"
         return self.pq.encode(self.rotate(vecs))
 
     def decode(self, codes):
@@ -234,6 +236,7 @@ class OPQ(object):
             np.ndarray: Reconstructed vectors with shape=(N, D) and dtype=np.float32
 
         """
+        assert self.R is not None, "R must be set by fit() before decode()"
         # Because R is a rotation matrix (R^t * R = I), R^-1 should be R^t
         return self.pq.decode(codes) @ self.R.T
 
@@ -250,4 +253,5 @@ class OPQ(object):
                 dtable with shape=(M, Ks) and dtype=np.float32
 
         """
+        assert self.R is not None, "R must be set by fit() before dtable()"
         return self.pq.dtable(self.rotate(query))

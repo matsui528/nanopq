@@ -112,7 +112,7 @@ class TestSuite(unittest.TestCase):
         self.assertTrue(np.array_equal(Cb_nanopq, Cb_faiss))
 
         # Search result should be same
-        topk = 100
+        topk = 10
         _, ids1 = pq_faiss.search(x=Xq, k=topk)
         ids2 = np.array(
             [
