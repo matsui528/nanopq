@@ -30,6 +30,8 @@ jobs:
         pip install .   # Install this library
         pip install .[dev] # Install dev dependencies
         pip install "numpy==1.*"   # numpy 2.x is not supported by faiss as of June 2025. Should be removed when faiss supports numpy 2.x
+        conda install "numpy=1.*"
+        conda install mkl
         conda install -c pytorch faiss-cpu
 
     - name: Test with pytest
