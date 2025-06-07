@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.cluster.vq import kmeans2, vq
-from typing import Literal
+from typing import Literal, Optional
 
 
 def dist_l2(q, x):
@@ -55,8 +55,8 @@ class PQ(object):
         self.code_dtype = (
             np.uint8 if Ks <= 2**8 else (np.uint16 if Ks <= 2**16 else np.uint32)
         )
-        self.codewords = None
-        self.Ds = None
+        self.codewords: Optional[np.ndarray] = None
+        self.Ds: Optional[int] = None
 
         if verbose:
             print(
@@ -142,6 +142,8 @@ class PQ(object):
         assert vecs.ndim == 2
         N, D = vecs.shape
         assert D == self.Ds * self.M, "input dimension must be Ds * M"
+        assert self.Ds is not None, "Ds must be set by fit() before encode()"
+        assert self.codewords is not None, "codewords must be set by fit() before encode()"
 
         # codes[n][m] : code of n-th vec, m-th subspace
         codes = np.empty((N, self.M), dtype=self.code_dtype)
@@ -169,6 +171,8 @@ class PQ(object):
         N, M = codes.shape
         assert M == self.M
         assert codes.dtype == self.code_dtype
+        assert self.Ds is not None, "Ds must be set by fit() before decode()"
+        assert self.codewords is not None, "codewords must be set by fit() before decode()"
 
         vecs = np.empty((N, self.Ds * self.M), dtype=np.float32)
         for m in range(self.M):
@@ -197,6 +201,8 @@ class PQ(object):
         assert query.ndim == 1, "input must be a single vector"
         (D,) = query.shape
         assert D == self.Ds * self.M, "input dimension must be Ds * M"
+        assert self.Ds is not None, "Ds must be set by fit() before dtable()"
+        assert self.codewords is not None, "codewords must be set by fit() before dtable()"
 
         # dtable[m] : distance between m-th subvec and m-th codewords (m-th subspace)
         # dtable[m][ks] : distance between m-th subvec and ks-th codeword of m-th codewords

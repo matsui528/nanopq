@@ -29,8 +29,9 @@ jobs:
         pip install pytest
         pip install .   # Install this library
         pip install .[dev] # Install dev dependencies
-        conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
-        
+        pip install "numpy==1.*"   # numpy 2.x is not supported by faiss as of June 2025. Should be removed when faiss supports numpy 2.x
+        conda install -c pytorch faiss-cpu
+
     - name: Test with pytest
       shell: bash -l {0}   # to activate conda
       run: |

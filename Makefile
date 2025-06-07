@@ -20,4 +20,4 @@ deploy: clean build
 	twine upload dist/*
 
 test_deploy: clean build
-	twine upload --repository-url https://test.pypi.org/legacy/ dist/*	
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
