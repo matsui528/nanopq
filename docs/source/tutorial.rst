@@ -1,17 +1,17 @@
 Tutorial
 ==========
 
-Basic of PQ
+Basics of PQ
 ------------
 
-This tutorial shows the basic usage of Nano Product Quantization Library (nanopq).
+This tutorial demonstrates the basic usage of the Nano Product Quantization Library (nanopq).
 Product quantization (PQ) is one of the most widely used algorithms
-for memory-efficient approximated nearest neighbor search,
+for memory-efficient approximate nearest neighbor search,
 especially in the field of computer vision.
-This package contains a vanilla implementation of PQ and its improved version, Optimized Product Quantization (OPQ).
+This package provides a standard implementation of PQ and its improved version, Optimized Product Quantization (OPQ).
 
-Let us first prepare 10,000 12-dim vectors for database, 2,000 vectors for training,
-and a query vector. They must be np.ndarray with np.float32.
+First, let us prepare 10,000 12-dimensional vectors for the database, 2,000 vectors for training,
+and a query vector. All of them must be np.ndarray with dtype np.float32.
 
 .. code-block:: python
 
@@ -22,70 +22,70 @@ and a query vector. They must be np.ndarray with np.float32.
     Xt = np.random.random((2000, 12)).astype(np.float32)
     query = np.random.random((12, )).astype(np.float32)
 
-The basic idea of PQ is to split an input `D`-dim vector into `M` `D/M`-dim sub-vectors.
-Each sub-vector is then quantized into an identifier of the nearest codeword.
+The basic idea of PQ is to split an input `D`-dimensional vector into `M` sub-vectors of size `D/M`.
+Each sub-vector is then quantized into the index of the nearest codeword.
 
-First of all, a PQ class (:class:`nanopq.PQ`) is instantiated with the number of sub-vector (`M`)
-and the number of codeword for each sub-space (`Ks`).
+First, instantiate the PQ class (:class:`nanopq.PQ`) with the number of sub-vectors (`M`)
+and the number of codewords for each subspace (`Ks`).
 
 .. code-block:: python
 
     pq = nanopq.PQ(M=4, Ks=256, verbose=True)
 
-Note that `M` is a parameter to control the trade off of accuracy and memory-cost.
-If you set larger `M`, you can achieve better quantization (i.e., less reconstruction error)
-with more memory usage.
+Note that `M` is a parameter that controls the trade-off between accuracy and memory cost.
+If you set a larger `M`, you can achieve better quantization (i.e., lower reconstruction error)
+at the expense of higher memory usage.
 `Ks` specifies the number of codewords for quantization.
-This is tyically 256 so that each sub-space is represented by 8 bits = 1 byte = np.uint8.
-The memory cost for each pq-code is `M * log_2 Ks` bits.
+This is typically 256 so that each subspace is represented by 8 bits = 1 byte = np.uint8.
+The memory cost for each PQ code is `M * log_2 Ks` bits.
 
-Next, you need to train this quantizer by running k-means clustering for each sub-space
-of the training vectors.
+Next, you need to train this quantizer by running k-means clustering for each subspace
+using the training vectors.
 
 .. code-block:: python
 
     pq.fit(vecs=Xt, iter=20, seed=123)
 
 If you do not have training data, you can simply use the database vectors
-(or a subset of them) for training: ``pq.fit(vecs=X[:1000])``. After that, you can see codewords by `pq.codewords`.
+(or a subset of them) for training: ``pq.fit(vecs=X[:1000])``. After that, you can view the codewords with `pq.codewords`.
 
-Note that, alternatively, you can instantiate and train an instance in one line if you want:
+Alternatively, you can instantiate and train an instance in one line if you prefer:
 
 .. code-block:: python
 
     pq = nanopq.PQ(M=4, Ks=256).fit(vecs=Xt, iter=20, seed=123)
 
 
-Given this quantizer, database vectors can be encoded to PQ-codes.
+Given this quantizer, database vectors can be encoded into PQ codes.
 
 .. code-block:: python
 
     X_code = pq.encode(vecs=X)
 
-The resulting PQ-code (a list of identifiers) can be regarded as a memory-efficient representation of the original vector,
+The resulting PQ codes (a list of indices) can be regarded as a memory-efficient representation of the original vectors,
 where the shape of `X_code` is (N, M).
 
 For the querying phase, the asymmetric distance between the query
-and the database PQ-codes can be computed efficiently.
+and the database PQ codes can be computed efficiently.
 
 .. code-block:: python
 
     dt = pq.dtable(query=query)  # dt.dtable.shape = (4, 256)
     dists = dt.adist(codes=X_code)  # (10000,)
 
-For each query, a distance table (`dt`) is first computed online.
-`dt` is an instance of :class:`nanopq.DistanceTable` class, which is a wrapper of the actual table (np.array), `dtable`.
+For each query, a distance table (`dt`) is first computed on the fly.
+`dt` is an instance of the :class:`nanopq.DistanceTable` class, which is a wrapper for the actual table (np.array), `dtable`.
 The elements of `dt.dtable` are computed by comparing each sub-vector of the query
-to the codewords for each sub-subspace.
+to the codewords for each subspace.
 More specifically, `dt.dtable[m][ks]` contains the squared Euclidean distance between
 (1) the `m`-th sub-vector of the query and (2) the `ks`-th codeword
-for the `m`-th sub-space (`pq.codewords[m][ks]`).
+for the `m`-th subspace (`pq.codewords[m][ks]`).
 
-Given `dtable`, the asymmetric distance to each PQ-code can be efficiently computed (`adist`).
-This can be achieved by simply fetching pre-computed distance value (the element of `dtable`)
-using PQ-codes.
+Given `dtable`, the asymmetric distance to each PQ code can be efficiently computed (`adist`).
+This can be achieved by simply fetching the pre-computed distance values (the elements of `dtable`)
+using the PQ codes.
 
-Note that the above two lines can be chained in a single line.
+Note that the above two lines can be combined into a single line.
 
 .. code-block:: python
 
@@ -100,7 +100,7 @@ The nearest feature is the one with the minimum distance.
 
 
 Note that the search result is similar to that
-by the exact squared Euclidean distance.
+obtained by the exact squared Euclidean distance.
 
 .. code-block:: python
 
@@ -112,11 +112,11 @@ by the exact squared Euclidean distance.
     print(dists_exact[:30])
 
 
-Decode (reconstruction)
+Decode (Reconstruction)
 -------------------------------
 
-Given PQ-codes, the original `D`-dim vectors can be
-approximately reconstructed by fetching codewords
+Given PQ codes, the original `D`-dimensional vectors can be
+approximately reconstructed by fetching the codewords
 
 .. code-block:: python
 
@@ -126,12 +126,11 @@ approximately reconstructed by fetching codewords
     print(X_reconstructed[:3])
 
 
-
-I/O by pickling
+I/O by Pickling
 ------------------
 
-A PQ instance can be pickled. Note that PQ-codes can be pickled as well because they are
-just a numpy array.
+A PQ instance can be pickled. Note that PQ codes can be pickled as well because they are
+just numpy arrays.
 
 .. code-block:: python
 
@@ -148,7 +147,7 @@ just a numpy array.
 Optimized PQ (OPQ)
 -------------------
 
-Optimized Product Quantizaion (OPQ; :class:`nanopq.OPQ`), which is an improved version of PQ, is also available
+Optimized Product Quantization (OPQ; :class:`nanopq.OPQ`), which is an improved version of PQ, is also available
 with the same interface as follows.
 
 .. code-block:: python
@@ -157,34 +156,34 @@ with the same interface as follows.
     X_code = opq.encode(vecs=X)
     dists = opq.dtable(query=query).adist(codes=X_code)
 
-The resultant codes approximate the original vectors finer,
-that usually leads to the better search accuracy.
-The training of OPQ will take much longer time compared to that of PQ.
+The resulting codes approximate the original vectors more accurately,
+which usually leads to better search accuracy.
+Training OPQ will take much longer compared to PQ.
 
 
-Relation to PQ in faiss
+Relation to PQ in Faiss
 -----------------------
 
 Note that
 `PQ is implemented in Faiss <https://github.com/facebookresearch/faiss/wiki/Faiss-building-blocks:-clustering,-PCA,-quantization#pq-encoding--decoding>`_,
-whereas Faiss is one of the most powerful ANN libraries developed by the original authors of PQ:
+which is one of the most powerful ANN libraries developed by the original authors of PQ:
 
 - `faiss.ProductQuantizer <https://github.com/facebookresearch/faiss/blob/master/ProductQuantizer.h>`_: The core component of PQ.
 - `faiss.IndexPQ <https://github.com/facebookresearch/faiss/blob/master/IndexPQ.h>`_: The search interface. IndexPQ = ProductQuantizer + PQ-codes.
 
-Since Faiss is highly optimized, you should use PQ in Faiss if the runtime is your most important criteria.
-The difference between PQ in `nanopq` and that in Faiss is highlighted as follows:
+Since Faiss is highly optimized, you should use PQ in Faiss if runtime is your most important criterion.
+The differences between PQ in `nanopq` and that in Faiss are highlighted as follows:
 
-- Our `nanopq` can be installed simply by pip without any third party dependencies such as Intel MKL
-- The core part of `nanopq` is a vanilla implementation of PQ written in a single python file.
-  It would be easier to extend that for further applications.
+- Our `nanopq` can be installed simply via pip without any third-party dependencies such as Intel MKL.
+- The core part of `nanopq` is a standard implementation of PQ written in a single Python file.
+  It is easier to extend for further applications.
 - A standalone OPQ is implemented.
-- The result of :func:`nanopq.DistanceTable.adist` is **not** sorted. This would be useful when you would like to
-  know not only the nearest but also the other results.
-- The accuracy (reconstruction error) of `nanopq.PQ` and that of `faiss.IndexPQ` are `almost same <https://github.com/matsui528/nanopq/blob/master/tests/test_convert_faiss.py>`_.
+- The result of :func:`nanopq.DistanceTable.adist` is **not** sorted. This is useful when you want to
+  know not only the nearest but also other results.
+- The accuracy (reconstruction error) of `nanopq.PQ` and that of `faiss.IndexPQ` are `almost the same <https://github.com/matsui528/nanopq/blob/master/tests/test_convert_faiss.py>`_.
 
 You can convert an instance of `nanopq.PQ` to/from that of `faiss.IndexPQ`
-by :func:`nanopq.nanopq_to_faiss` or :func:`nanopq.faiss_to_nanopq`.
+using :func:`nanopq.nanopq_to_faiss` or :func:`nanopq.faiss_to_nanopq`.
 
 .. code-block:: python
 
